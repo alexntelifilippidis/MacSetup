@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.log
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# PyCharm
+.idea/
+
+# Databricks
+databricks/.databrickscfg
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test and coverage
+htmlcov/
+.tox/
+.coverage
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# Misc
+*.swp
+*.swo

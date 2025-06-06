@@ -1,0 +1,22 @@
+[DEFAULT]
+# The Databricks workspace host URL, e.g. https://adb-1234567890123456.7.azuredatabricks.net
+host = <DATABRICKS_HOST>
+
+# Default authentication: Personal Access Token
+token = <DATABRICKS_TOKEN>
+
+# --- Alternative: Azure Service Principal authentication ---
+# Uncomment and fill in the following for Azure SPN auth:
+#[AZURE_PROFILE]
+# azure_tenant_id = <AZURE_TENANT_ID>
+# azure_client_id = <AZURE_CLIENT_ID>
+# azure_client_secret = <AZURE_CLIENT_SECRET>
+# auth_type = azure-client-secret
+
+# --- Alternative: Databricks CLI authentication ---
+# Example profile for Databricks CLI auth
+#[CLI_PROFILE]
+#host = https://adb-1608121643336927.7.azuredatabricks.net
+#auth_type = databricks-cli
+
+

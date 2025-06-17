@@ -13,6 +13,7 @@ brew "openjdk@11"
 brew "zsh-autosuggestions"
 brew "zsh-completions"
 brew "zsh-syntax-highlighting"
+brew "hatch"
 
 
 cask "git-credential-manager"

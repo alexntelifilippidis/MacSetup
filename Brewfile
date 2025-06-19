@@ -16,6 +16,7 @@ brew "zsh-autosuggestions"
 brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 brew "hatch"
+brew "podman"
 
 
 cask "git-credential-manager"
@@ -25,4 +26,5 @@ cask "pycharm"
 cask "intellij-idea"
 cask "alfred"
 cask "chatgpt"
+cask "podman-desktop"
 

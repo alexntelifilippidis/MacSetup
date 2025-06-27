@@ -17,6 +17,8 @@ brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 brew "hatch"
 brew "podman"
+brew "shellcheck"
+brew "hadolint"
 
 
 cask "git-credential-manager"

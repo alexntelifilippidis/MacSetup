@@ -19,6 +19,7 @@ brew "hatch"
 brew "podman"
 brew "shellcheck"
 brew "hadolint"
+brew "databricks"
 
 
 cask "git-credential-manager"

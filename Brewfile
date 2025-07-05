@@ -20,7 +20,7 @@ brew "podman"
 brew "shellcheck"
 brew "hadolint"
 brew "databricks"
-
+brew "curl"
 
 cask "git-credential-manager"
 cask "google-chrome"

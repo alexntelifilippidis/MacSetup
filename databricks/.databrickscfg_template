@@ -16,7 +16,7 @@ token = <DATABRICKS_TOKEN>
 # --- Alternative: Databricks CLI authentication ---
 # Example profile for Databricks CLI auth
 #[CLI_PROFILE]
-#host = https://adb-1608121643336927.7.azuredatabricks.net
+#host = <DATABRICKS_HOST>
 #auth_type = databricks-cli
 
 

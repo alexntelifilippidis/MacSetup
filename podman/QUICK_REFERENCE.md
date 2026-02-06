@@ -102,6 +102,40 @@ podman logs <container-name-or-id>
 
 ## Troubleshooting
 
+### TLS Handshake Failure
+If you get `tls: handshake failure` errors when pulling images or running `docker-compose`:
+
+```bash
+# 1. Verify registry configuration is correct
+podman machine ssh -- "sudo cat /etc/containers/registries.conf | tail -10"
+
+# Expected output should show:
+# [[registry]]
+# prefix = "docker.io"
+# location = "docker.io"
+# 
+# [[registry.mirror]]
+# location = "registry.kaizengaming.eu/docker-hub-proxy"
+# insecure = true
+
+# 2. If configuration is missing or incorrect, re-run setup
+bash podman/setup_podman.sh
+
+# 3. If issue persists, manually restart the machine
+podman machine stop
+podman machine start
+
+# 4. Test with a simple image pull
+podman pull hello-world
+
+# 5. If using docker-compose, ensure DOCKER_HOST is set correctly
+echo $DOCKER_HOST  # Should show the socket path
+# If empty or incorrect:
+export DOCKER_HOST=unix:///var/run/docker.sock
+```
+
+**Root Cause:** The `insecure = true` flag must be set for the registry mirror to allow HTTP connections. Without it, TLS handshake failures occur.
+
 ### Reset Everything
 ```bash
 # Stop and remove machine

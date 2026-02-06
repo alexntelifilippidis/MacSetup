@@ -76,7 +76,14 @@ podman machine ssh $MACHINE_NAME << 'EOF'
     echo "✅ Registry configuration overwritten"
 EOF
 
+# Restart Podman machine to apply changes
+echo ""
+echo -e "${YELLOW}⏳ Restarting Podman machine to apply changes...${RESET}"
+podman machine stop
+podman machine start
+
 echo ""
 echo -e "${GREEN}🎉 Podman Setup Complete! 🎉${RESET}"
 echo -e "${CYAN}Registry mirror: registry.kaizengaming.eu/docker-hub-proxy${RESET}"
+echo -e "${CYAN}The Podman machine has been restarted with the new configuration.${RESET}"
 echo ""

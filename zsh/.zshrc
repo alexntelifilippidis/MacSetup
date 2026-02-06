@@ -130,7 +130,7 @@ export PATH="$PATH:${HOME}/.local/bin"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # Java Setup
-export JAVA_HOME="$(brew --prefix)/opt/openjdk@11"
+export JAVA_HOME="$(brew --prefix)/opt/openjdk@17"
 export PATH="${JAVA_HOME}/bin:${PATH}"
 export CPPFLAGS="-I${JAVA_HOME}/include"
 

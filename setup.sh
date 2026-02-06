@@ -65,6 +65,12 @@ cp ./git-credential-manager/.gitconfig "$HOME/.gitconfig"
 cp ./git-credential-manager/.gitconfig-personal "$HOME/Projects/Personal/.gitconfig"
 cp ./git-credential-manager/.gitconfig-work "$HOME/Projects/Work/.gitconfig"
 
+# Setup Podman
+echo ""
+echo -e "${MAGENTA}▶▶▶ 🐋 Setting up Podman Machine ◀◀◀${RESET}"
+echo -e "${MAGENTA}──────────────────────────────────────${RESET}"
+bash ./podman/setup_podman.sh
+
 echo ""
 echo -e "${GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${RESET}"
 echo -e "${GREEN}             🎉 Setup Complete! 🎉${RESET}"

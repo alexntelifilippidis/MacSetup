@@ -9,6 +9,13 @@ mac-dev-setup/
 │   └── .zshrc
 ├── databricks/
 │   └── .databrickscfg
+├── git-credential-manager/
+│   ├── .gitconfig
+│   ├── .gitconfig-personal
+│   └── .gitconfig-work
+├── podman/
+│   ├── setup_podman.sh
+│   └── registries.conf
 ├── README.md
 ```
 
@@ -38,6 +45,8 @@ Make sure to customize .databrickscfg with your actual token/workspace before ru
 	•	setup.sh: Main setup script
 	•	zsh/.zshrc: Your Zsh config (Oh My Zsh based)
 	•	databricks/.databrickscfg: Template for Databricks CLI
+	•	git-credential-manager/: Git configuration files
+	•	podman/: Podman machine setup with registry mirror configuration
 
 ---
 
@@ -119,3 +128,57 @@ token = <your-personal-access-token>
 
 ```
 ⸻
+
+### 🐋 Podman Setup
+
+The setup automatically configures Podman machine with SSH access and a custom Docker Hub registry mirror.
+
+#### What it does:
+1. **Initializes and starts Podman machine** - Creates and launches the VM
+2. **Configures SSH access** - Sets up `podman machine ssh` for easy management
+3. **Sets up Docker Hub mirror** - Uses `registry.kaizengaming.eu/docker-hub-proxy`
+4. **Appends to `/etc/containers/registries.conf`** - Adds mirror config inside the Podman VM via SSH
+
+#### How the Registry Configuration Works:
+The script uses `podman machine ssh` to:
+- SSH into the Podman machine VM
+- Create a backup of the original `/etc/containers/registries.conf`
+- Append the registry mirror configuration to the file
+- Verify the configuration to avoid duplicates
+
+#### Manual Podman Setup
+If you want to run Podman setup separately:
+```bash
+bash ./podman/setup_podman.sh
+
+# Or using Make
+make podman-setup
+```
+
+#### SSH into Podman Machine
+```bash
+# Interactive SSH session
+podman machine ssh
+
+# Execute single command inside the VM
+podman machine ssh -- "sudo cat /etc/containers/registries.conf"
+
+# List all machines
+podman machine list
+```
+
+#### Registry Configuration
+The following configuration is **appended** to `/etc/containers/registries.conf` inside the Podman machine:
+```toml
+[[registry]]
+location="docker.io"
+[[registry.mirror]]
+location="registry.kaizengaming.eu/docker-hub-proxy"
+```
+
+#### Quick Reference
+See [`podman/QUICK_REFERENCE.md`](podman/QUICK_REFERENCE.md) for detailed SSH commands and Podman operations.
+
+⸻
+
+

@@ -1,4 +1,4 @@
-.PHONY: mac-setup brew-folder
+.PHONY: mac-setup brew-folder podman-setup
 
 ## ATTENTION! activate virtual environment before running!
 
@@ -6,6 +6,11 @@
 mac-setup:
 	@echo "Installing packages..."
 	bash setup.sh
+
+## podman-setup: setup podman machine and registry mirror
+podman-setup:
+	@echo "Setting up Podman machine..."
+	bash podman/setup_podman.sh
 
 ## see brew-folder
 brew-folder :

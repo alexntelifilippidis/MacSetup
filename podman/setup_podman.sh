@@ -37,7 +37,7 @@ fi
 
 # Configure SSH access
 echo -e "${BLUE}🔑 Setting up SSH access to Podman machine...${RESET}"
-MACHINE_NAME=$(podman machine list --format "{{.Name}}" | head -n 1)
+MACHINE_NAME=$(podman machine list --format "{{.Name}}" | tail -n 1 | tr -d '*' | xargs)
 
 echo -e "${GREEN}✅ SSH access configured for machine: $MACHINE_NAME${RESET}"
 echo -e "${CYAN}   You can SSH into the machine using:${RESET}"
@@ -62,7 +62,7 @@ echo -e "${YELLOW}⏳ Updating registry configuration inside Podman machine...${
 # Copy the registries.conf to the podman machine's tmp directory
 podman machine ssh $MACHINE_NAME "cat > /tmp/registries_mirror.conf" < "$REGISTRIES_CONF"
 
-# SSH into podman machine and append the configuration
+# SSH into podman machine and overwrite the configuration
 podman machine ssh $MACHINE_NAME << 'EOF'
     # Backup original registries.conf if not already backed up
     if [ ! -f /etc/containers/registries.conf.bak ]; then
@@ -70,17 +70,10 @@ podman machine ssh $MACHINE_NAME << 'EOF'
         echo "✅ Backed up original registries.conf"
     fi
 
-    # Check if our mirror is already configured
-    if ! sudo grep -q "registry.kaizengaming.eu/docker-hub-proxy" /etc/containers/registries.conf; then
-        echo "" | sudo tee -a /etc/containers/registries.conf > /dev/null
-        echo "# Custom Docker Hub Mirror" | sudo tee -a /etc/containers/registries.conf > /dev/null
-        sudo cat /tmp/registries_mirror.conf | sudo tee -a /etc/containers/registries.conf > /dev/null
-        sudo rm -f /tmp/registries_mirror.conf
-        echo "✅ Registry mirror configuration added"
-    else
-        sudo rm -f /tmp/registries_mirror.conf
-        echo "✅ Registry mirror already configured"
-    fi
+    # Overwrite the registries.conf with our custom configuration
+    sudo cp /tmp/registries_mirror.conf /etc/containers/registries.conf
+    sudo rm -f /tmp/registries_mirror.conf
+    echo "✅ Registry configuration overwritten"
 EOF
 
 echo ""

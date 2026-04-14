@@ -71,6 +71,17 @@ echo -e "${MAGENTA}▶▶▶ 🐋 Setting up Podman Machine ◀◀◀${RESET}"
 echo -e "${MAGENTA}──────────────────────────────────────${RESET}"
 bash ./podman/setup_podman.sh
 
+# Setup Github Copilot
+echo ""
+echo -e "${BLUE}▶▶▶ 🤖 Setting up GitHub Copilot config ◀◀◀${RESET}"
+echo -e "${BLUE}──────────────────────────────────────────────${RESET}"
+mkdir -p "$HOME/.config/github-copilot/intellij"
+cp -f ./github-copilot/intellij/global-copilot-instructions.md "$HOME/.config/github-copilot/intellij/global-copilot-instructions.md"
+cp -f ./github-copilot/intellij/global-agents-instructions.md "$HOME/.config/github-copilot/intellij/global-agents-instructions.md"
+cp -f ./github-copilot/intellij/global-git-commit-instructions.md "$HOME/.config/github-copilot/intellij/global-git-commit-instructions.md"
+echo -e "${GREEN}✅ GitHub Copilot instructions copied (replaced if existed)! 🤖${RESET}"
+
+
 echo ""
 echo -e "${GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${RESET}"
 echo -e "${GREEN}             🎉 Setup Complete! 🎉${RESET}"

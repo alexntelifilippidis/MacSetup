@@ -23,6 +23,7 @@ brew "shellcheck"
 brew "hadolint"
 brew "databricks"
 brew "curl"
+brew "unixodbc"
 
 cask "git-credential-manager"
 cask "google-chrome"

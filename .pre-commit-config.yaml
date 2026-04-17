@@ -1,0 +1,73 @@
+# Pre-commit hooks for MacSetup.
+# Why: the Brewfile already installs `pre-commit` and `shellcheck` but nothing
+# wired them up. These hooks catch quoting bugs, trailing whitespace, merge
+# conflict markers, and YAML errors BEFORE they hit a commit.
+#
+# Usage:
+#   pre-commit install            # one-time, installs git hook
+#   pre-commit run --all-files    # run on the whole repo
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      # Why: prevents accidentally committing world-readable private keys /
+      # tokens (e.g. .databrickscfg) during a sleepy Sunday commit.
+      - id: detect-private-key
+
+  # Shell script linter.
+  # Why a local hook instead of `shellcheck-precommit`: that upstream hook pulls
+  # a Docker image via `docker system info`, which fails on machines that use
+  # Podman (no docker CLI). We use the brew-installed `shellcheck` binary directly.
+  # Why exclude `.zshrc`: it's zsh, not bash — shellcheck only understands bash
+  # / sh / dash / ksh and throws false positives (SC2148, SC2034) on zsh arrays
+  # and plugin configs.
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+        exclude: ^zsh/\.zshrc$
+
+  # Bash formatter — uses the brew-installed `shfmt` for the same Docker-free reason.
+  # Run `brew bundle --file=./Brewfile` first so shfmt is on PATH.
+  - repo: local
+    hooks:
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -w -i 2 -ci -sr
+        language: system
+        types: [shell]
+        exclude: ^zsh/\.zshrc$
+
+  # Markdown lint — `--fix` auto-formats blank lines / code fences so we don't
+  # have to manually touch every doc on every rule change.
+  # Disabled rules:
+  #   MD013 line length — prose wraps naturally
+  #   MD033 inline HTML  — badges etc.
+  #   MD041 first line top-level heading — some docs start with frontmatter
+  #   MD010 hard tabs    — Makefile-like examples include tabs
+  #   MD026 trailing punctuation in headings — we use "Structure:" style
+  #   MD040 fenced code language — many shell tree/structure blocks are plain
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+      - id: markdownlint
+        args:
+          - --fix
+          - --disable
+          - MD013
+          - MD033
+          - MD041
+          - MD010
+          - MD026
+          - MD040
+          - --

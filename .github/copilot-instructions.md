@@ -1,11 +1,12 @@
 # Copilot Instructions: MacSetup
 
 ## Repository Summary
+
 This is a **personal Mac development environment setup repository**. It provides automated configuration for a Mac development environment using Homebrew, Oh My Zsh, Databricks CLI, Git credential manager, and Podman with custom registry mirrors. The repository enables quick and reproducible setup of a development workstation.
 
-**Tech Stack:** Bash shell scripts, Homebrew, Oh My Zsh, Git, Databricks CLI, Podman  
-**Package Managers:** Homebrew (via Brewfile)  
-**Environment:** macOS (optimized for Apple Silicon with `/opt/homebrew`)  
+**Tech Stack:** Bash shell scripts, Homebrew, Oh My Zsh, Git, Databricks CLI, Podman
+**Package Managers:** Homebrew (via Brewfile)
+**Environment:** macOS (optimized for Apple Silicon with `/opt/homebrew`)
 **Purpose:** Personal development environment automation
 
 ## Repository Structure
@@ -40,6 +41,7 @@ MacSetup/
 ## Quick Start
 
 ### Initial Setup (One Command)
+
 ```bash
 # Clone and run full setup
 git clone https://github.com/yourusername/MacSetup.git
@@ -49,6 +51,7 @@ chmod +x setup.sh
 ```
 
 ### Makefile Shortcuts
+
 ```bash
 make help          # Show all available commands
 make mac-setup     # Run full Mac setup (same as ./setup.sh)
@@ -59,7 +62,9 @@ make brew-folder   # Show Homebrew installation path
 ## What Gets Installed
 
 ### Homebrew Packages (via Brewfile)
+
 **Development Tools:**
+
 - `git`, `gh` (GitHub CLI), `glab` (GitLab CLI), `copilot`
 - `pre-commit`, `shellcheck`, `hadolint`
 - `terraform`, `terraform-docs`
@@ -67,21 +72,26 @@ make brew-folder   # Show Homebrew installation path
 - `curl`, `unixodbc`
 
 **Programming Languages:**
+
 - Python: 3.10, 3.11, 3.12, 3.13
 - Java: OpenJDK 11, 17
 
 **Container Tools:**
+
 - `podman`, `podman-compose`
 
 **Databricks:**
+
 - `databricks` CLI
 
 **Zsh Enhancements:**
+
 - `zsh-autosuggestions`
 - `zsh-completions`
 - `zsh-syntax-highlighting`
 
 ### Homebrew Casks (Applications)
+
 - `git-credential-manager` - Secure Git credential storage
 - `google-chrome` - Web browser
 - `iterm2` - Terminal emulator
@@ -126,6 +136,7 @@ The `setup.sh` script performs these steps in order:
 ## Podman Setup
 
 ### What Podman Setup Does
+
 1. Initializes Podman machine (if not exists)
 2. Starts the Podman VM
 3. Configures SSH access
@@ -134,7 +145,9 @@ The `setup.sh` script performs these steps in order:
 6. Enables insecure registry for HTTP access
 
 ### Podman Configuration
+
 The script appends this configuration to `/etc/containers/registries.conf`:
+
 ```toml
 [[registry]]
 prefix = "docker.io"
@@ -150,6 +163,7 @@ insecure = true
 ### Podman Commands
 
 **Machine Management:**
+
 ```bash
 podman machine start          # Start the VM
 podman machine stop           # Stop the VM
@@ -158,6 +172,7 @@ podman machine ssh            # SSH into the VM
 ```
 
 **SSH into Podman VM:**
+
 ```bash
 # Interactive session
 podman machine ssh
@@ -170,6 +185,7 @@ podman machine ssh -- "sudo grep -A 2 'docker.io' /etc/containers/registries.con
 ```
 
 **Container Operations:**
+
 ```bash
 podman pull nginx             # Pull image (uses mirror)
 podman run -d -p 8080:80 nginx  # Run container
@@ -183,22 +199,27 @@ podman logs <container>       # View logs
 If you see `tls: handshake failure` errors:
 
 1. **Verify registry configuration:**
+
    ```bash
    podman machine ssh -- "sudo cat /etc/containers/registries.conf | tail -10"
    ```
+
    Should show `insecure = true` for the mirror.
 
 2. **Re-run setup:**
+
    ```bash
    bash podman/setup_podman.sh
    ```
 
 3. **Restart machine:**
+
    ```bash
    podman machine stop && podman machine start
    ```
 
 4. **Test pull:**
+
    ```bash
    podman pull hello-world
    ```
@@ -210,6 +231,7 @@ If you see `tls: handshake failure` errors:
 The setup uses conditional Git configurations to separate personal and work settings:
 
 **Main `.gitconfig`** contains conditional includes:
+
 - Loads `.gitconfig-personal` when in `~/Projects/Personal/`
 - Loads `.gitconfig-work` when in `~/Projects/Work/`
 
@@ -218,7 +240,9 @@ This allows different email addresses, signing keys, etc. based on project locat
 ## Customization Guide
 
 ### Adding New Homebrew Packages
+
 Edit `Brewfile` and add:
+
 ```ruby
 # For CLI tools
 brew "package-name"
@@ -233,13 +257,17 @@ tap "owner/repo"
 Then run: `brew bundle --file=./Brewfile`
 
 ### Modifying Zsh Configuration
+
 Edit `zsh/.zshrc` with your preferences. After editing:
+
 ```bash
 source ~/.zshrc  # Reload configuration
 ```
 
 ### Updating Databricks Config
+
 Edit `databricks/.databrickscfg` with your workspace details:
+
 ```ini
 [DEFAULT]
 host = https://<your-workspace-url>
@@ -251,13 +279,16 @@ token = <another-token>
 ```
 
 Then copy to home:
+
 ```bash
 cp databricks/.databrickscfg ~/.databrickscfg
 chmod 600 ~/.databrickscfg
 ```
 
 ### Adding Git Configurations
+
 Edit the appropriate config file:
+
 - Global settings: `git-credential-manager/.gitconfig`
 - Personal projects: `git-credential-manager/.gitconfig-personal`
 - Work projects: `git-credential-manager/.gitconfig-work`
@@ -271,6 +302,7 @@ When modifying or adding shell scripts in this project:
 1. **Use Bash shebang:** Start with `#!/bin/bash`
 
 2. **Color output:** Use ANSI color codes for better UX
+
    ```bash
    GREEN='\033[0;32m'
    YELLOW='\033[1;33m'
@@ -279,6 +311,7 @@ When modifying or adding shell scripts in this project:
    ```
 
 3. **Check before installing:**
+
    ```bash
    if ! command -v tool &> /dev/null; then
      echo "Installing tool..."
@@ -290,12 +323,14 @@ When modifying or adding shell scripts in this project:
 5. **Use absolute paths for user files:** `$HOME/.config` not `~/.config`
 
 6. **Set file permissions explicitly:**
+
    ```bash
    chmod 600 sensitive-file  # Read/write for owner only
    chmod +x script.sh        # Make executable
    ```
 
 7. **Validate critical operations:**
+
    ```bash
    if [ -f "$HOME/.databrickscfg" ]; then
      echo "File already exists"
@@ -307,14 +342,17 @@ When modifying or adding shell scripts in this project:
 ## Common Tasks
 
 ### Re-running Full Setup
+
 ```bash
 ./setup.sh
 # OR
 make mac-setup
 ```
+
 The scripts are idempotent and safe to re-run.
 
 ### Re-running Only Podman Setup
+
 ```bash
 bash podman/setup_podman.sh
 # OR
@@ -322,6 +360,7 @@ make podman-setup
 ```
 
 ### Updating Homebrew Packages
+
 ```bash
 brew update           # Update Homebrew itself
 brew upgrade          # Upgrade all packages
@@ -329,6 +368,7 @@ brew bundle --file=./Brewfile  # Install any new packages from Brewfile
 ```
 
 ### Checking Installed Versions
+
 ```bash
 brew --version
 python3 --version
@@ -338,6 +378,7 @@ podman --version
 ```
 
 ### Finding Homebrew Installation
+
 ```bash
 make brew-folder
 # OR
@@ -347,7 +388,9 @@ brew --prefix
 ## Maintenance
 
 ### Keeping Brewfile Updated
+
 Periodically review installed packages:
+
 ```bash
 brew list              # List all installed formulae
 brew list --cask       # List all installed casks
@@ -355,6 +398,7 @@ brew bundle dump       # Generate Brewfile from installed packages
 ```
 
 ### Cleaning Up Homebrew
+
 ```bash
 brew cleanup           # Remove old versions
 brew autoremove        # Remove unused dependencies
@@ -362,7 +406,9 @@ brew doctor            # Check for issues
 ```
 
 ### Backing Up Configurations
+
 All config files are in this repository. To backup:
+
 ```bash
 cd ~/Projects/Personal/MacSetup
 git add -A
@@ -373,18 +419,23 @@ git push
 ## Troubleshooting
 
 ### Homebrew Not Found After Install
+
 Add to `.zprofile` or `.zshrc`:
+
 ```bash
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
 ### Oh My Zsh Installation Fails
+
 Manually install:
+
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
 ### Podman Machine Won't Start
+
 ```bash
 podman machine stop
 podman machine rm
@@ -392,23 +443,29 @@ bash podman/setup_podman.sh  # Re-initialize
 ```
 
 ### Git Credential Manager Issues
+
 Check installation:
+
 ```bash
 git credential-manager --version
 ```
 
 Re-install if needed:
+
 ```bash
 brew reinstall git-credential-manager
 ```
 
 ### Databricks CLI Authentication
+
 List profiles:
+
 ```bash
 databricks auth profiles
 ```
 
 Test connection:
+
 ```bash
 databricks workspace list
 ```
@@ -431,13 +488,12 @@ databricks workspace list
 
 ## Quick Reference
 
-**Run full setup:** `./setup.sh` or `make mac-setup`  
-**Setup Podman only:** `make podman-setup`  
-**Show help:** `make help`  
-**SSH to Podman:** `podman machine ssh`  
-**Check Podman config:** `podman machine ssh -- "sudo cat /etc/containers/registries.conf"`  
-**Update packages:** `brew bundle --file=./Brewfile`  
+**Run full setup:** `./setup.sh` or `make mac-setup`
+**Setup Podman only:** `make podman-setup`
+**Show help:** `make help`
+**SSH to Podman:** `podman machine ssh`
+**Check Podman config:** `podman machine ssh -- "sudo cat /etc/containers/registries.conf"`
+**Update packages:** `brew bundle --file=./Brewfile`
 **Reload Zsh:** `source ~/.zshrc`
 
 **End of Instructions** - This guide covers the complete MacSetup repository for automated Mac development environment configuration.
-

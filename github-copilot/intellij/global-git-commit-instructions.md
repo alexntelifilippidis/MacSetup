@@ -1,12 +1,15 @@
 # Global Git Commit Message Instructions
 
 ## Format
+
 Always use **Conventional Commits** format:
+
 ```
 <type>(<optional scope>): <short summary>
 ```
 
 ## Allowed Commit Types
+
 - `feat` — ✨ a new feature
 - `fix` — 🐛 a bug fix
 - `chore` — 🔧 routine task (build config, dependencies, maintenance)
@@ -19,11 +22,13 @@ Always use **Conventional Commits** format:
 - `test` — 🧪 adding or updating tests
 
 ## MR Title Regex (enforced by GitLab CI)
+
 ```
 ^((feat|fix|chore|ci|docs|perf|refactor|revert|style|test)(\([[:alnum:][:space:]\/:,-]+\))?(!)?: .+|Merge branch .+|[iI]nitial commit)$
 ```
 
 ## Rules
+
 - **Summary line:** imperative mood, lowercase, no period at the end, max 72 chars
   - ✅ `feat: add podman registry mirror setup`
   - ❌ `Added podman registry mirror setup.`
@@ -34,6 +39,7 @@ Always use **Conventional Commits** format:
 - Never commit directly to `main` or `master`
 
 ## Branch Naming Convention (enforced by GitLab CI)
+
 ```
 ^((feature|bugfix|hotfix|release|chore|config)/([A-Z]+-\d+|NOJIRA)-.*|main|master)$
 ```
@@ -51,6 +57,7 @@ Always use **Conventional Commits** format:
 - Use `NOJIRA` only for trivial changes with no associated ticket
 
 **Examples:**
+
 ```
 feature/PROJ-123-add_login
 bugfix/PROJ-456-fix_header_overlap
@@ -60,6 +67,7 @@ config/DATA-321-update_databricks_target
 ```
 
 ## Commit/MR Examples
+
 ```
 feat(auth): add OAuth2 support
 feat(podman): add docker hub registry mirror configuration

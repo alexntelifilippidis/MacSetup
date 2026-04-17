@@ -1,4 +1,8 @@
 #!/bin/bash
+# Strict mode: fail fast on errors, unset vars, and broken pipes.
+# Prevents silent cascading failures (e.g. a failed `cp` letting the rest run).
+set -euo pipefail
+IFS=$'\n\t'
 
 # Colors
 GREEN='\033[0;32m'
@@ -6,6 +10,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
 CYAN='\033[1;36m'
 MAGENTA='\033[1;35m'
+# shellcheck disable=SC2034  # RED is kept for error paths / future use
 RED='\033[0;31m'
 RESET='\033[0m'
 
@@ -71,8 +76,19 @@ section "🍺" "Homebrew" "$YELLOW"
 if ! command -v brew &> /dev/null; then
   echo -e "  ${YELLOW}⬇️  Homebrew not found — installing now...${RESET}"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  echo >> "$HOME/.zprofile"
-  echo "eval $(/opt/homebrew/bin/brew shellenv)" >> "$HOME/.zprofile"
+  # Why: the previous version used `echo "eval $(...)"` (double-quoted), which
+  # expanded the command at *write time* and stored the expanded output in
+  # .zprofile. We want the eval to run at shell-startup on every new terminal,
+  # so we single-quote the snippet. Also guard with grep to stay idempotent —
+  # re-running setup must not append duplicate blocks to .zprofile.
+  if ! grep -q 'brew shellenv' "$HOME/.zprofile" 2> /dev/null; then
+    {
+      echo ''
+      # shellcheck disable=SC2016  # intentional: literal text written to .zprofile,
+      # expansion must happen at shell-startup, not now.
+      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+    } >> "$HOME/.zprofile"
+  fi
   eval "$(/opt/homebrew/bin/brew shellenv)"
   echo -e "  ${GREEN}✅ Homebrew installed and added to PATH${RESET}"
 else
@@ -111,9 +127,9 @@ copy_if_changed ./databricks/.databrickscfg "$HOME/.databrickscfg" 600
 
 # ── Git Config ────────────────────────────────────────────────────────────────
 section "🛠️" "Git Config" "$BLUE"
-copy_if_changed ./git-credential-manager/.gitconfig          "$HOME/.gitconfig"
+copy_if_changed ./git-credential-manager/.gitconfig "$HOME/.gitconfig"
 copy_if_changed ./git-credential-manager/.gitconfig-personal "$HOME/Projects/Personal/.gitconfig"
-copy_if_changed ./git-credential-manager/.gitconfig-work     "$HOME/Projects/Work/.gitconfig"
+copy_if_changed ./git-credential-manager/.gitconfig-work "$HOME/Projects/Work/.gitconfig"
 
 # ── Podman ────────────────────────────────────────────────────────────────────
 section "🐋" "Podman Machine" "$MAGENTA"
@@ -122,8 +138,8 @@ bash ./podman/setup_podman.sh
 # ── GitHub Copilot ────────────────────────────────────────────────────────────
 section "🤖" "GitHub Copilot Instructions" "$BLUE"
 mkdir -p "$HOME/.config/github-copilot/intellij"
-copy_if_changed ./github-copilot/intellij/global-copilot-instructions.md  "$HOME/.config/github-copilot/intellij/global-copilot-instructions.md"
-copy_if_changed ./github-copilot/intellij/global-agents-instructions.md   "$HOME/.config/github-copilot/intellij/global-agents-instructions.md"
+copy_if_changed ./github-copilot/intellij/global-copilot-instructions.md "$HOME/.config/github-copilot/intellij/global-copilot-instructions.md"
+copy_if_changed ./github-copilot/intellij/global-agents-instructions.md "$HOME/.config/github-copilot/intellij/global-agents-instructions.md"
 copy_if_changed ./github-copilot/intellij/global-git-commit-instructions.md "$HOME/.config/github-copilot/intellij/global-git-commit-instructions.md"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
@@ -133,4 +149,3 @@ echo -e "${GREEN}                  🎉 Setup Complete! 🎉${RESET}"
 echo -e "${YELLOW}       Restart your terminal to apply all changes${RESET}"
 echo -e "${GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${RESET}"
 echo ""
-

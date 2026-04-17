@@ -1,0 +1,51 @@
+# Why: there was a .github/ folder but no CI. Every push now gets shellcheck +
+# pre-commit so quoting bugs and formatting regressions fail fast in PR, not
+# six months later on a fresh machine install.
+name: ci
+
+# Why quoted: YAML parses the bare word `on` as boolean true, which some
+# schema validators then reject. Quoting keeps it a plain string key.
+"on":
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck & shfmt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          # shfmt via Go install keeps the version pinned alongside pre-commit
+          curl -sSL https://github.com/mvdan/sh/releases/download/v3.8.0/shfmt_v3.8.0_linux_amd64 \
+            -o /usr/local/bin/shfmt
+          sudo chmod +x /usr/local/bin/shfmt
+
+      - name: ShellCheck
+        run: shellcheck setup.sh podman/setup_podman.sh
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: pre-commit/action@v3.0.1
+
+  # Why: branch-name check matches the GitLab policy Batman already uses at
+  # work, so personal repos fail early with the same rules.
+  branch-name:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Validate branch name
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          PATTERN='^((feature|bugfix|hotfix|release|chore|config)/([A-Z]+-[0-9]+|NOJIRA)-.*|main|master)$'
+          if ! [[ "$BRANCH" =~ $PATTERN ]]; then
+            echo "❌ Branch '$BRANCH' does not match $PATTERN"
+            exit 1
+          fi
+          echo "✅ Branch name OK: $BRANCH"

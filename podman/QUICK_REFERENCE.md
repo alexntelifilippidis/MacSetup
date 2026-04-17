@@ -3,6 +3,7 @@
 ## SSH Commands
 
 ### Connect to Podman Machine
+
 ```bash
 # Interactive SSH session
 podman machine ssh
@@ -20,6 +21,7 @@ podman machine ssh -- "sudo grep -A 2 'docker.io' /etc/containers/registries.con
 ## Machine Management
 
 ### Start/Stop Machine
+
 ```bash
 # Start machine
 podman machine start
@@ -38,6 +40,7 @@ podman machine inspect
 ```
 
 ### Machine Status
+
 ```bash
 # Check if machine is running
 podman machine list --format "{{.Name}}: {{.Running}}"
@@ -49,6 +52,7 @@ podman machine info
 ## Registry Configuration
 
 ### View Current Configuration
+
 ```bash
 # From host machine
 podman machine ssh -- "sudo cat /etc/containers/registries.conf"
@@ -58,12 +62,14 @@ sudo cat /etc/containers/registries.conf
 ```
 
 ### Check Backup
+
 ```bash
 # View backup of original config
 podman machine ssh -- "sudo cat /etc/containers/registries.conf.bak"
 ```
 
 ### Verify Mirror is Active
+
 ```bash
 # Pull an image and check logs
 podman pull --log-level=debug hello-world 2>&1 | grep registry
@@ -72,6 +78,7 @@ podman pull --log-level=debug hello-world 2>&1 | grep registry
 ## Container Operations
 
 ### Basic Commands
+
 ```bash
 # Pull an image (uses mirror automatically)
 podman pull nginx
@@ -96,6 +103,7 @@ podman rmi nginx
 ```
 
 ### Check Container Logs
+
 ```bash
 podman logs <container-name-or-id>
 ```
@@ -103,6 +111,7 @@ podman logs <container-name-or-id>
 ## Troubleshooting
 
 ### TLS Handshake Failure
+
 If you get `tls: handshake failure` errors when pulling images or running `docker-compose`:
 
 ```bash
@@ -113,7 +122,7 @@ podman machine ssh -- "sudo cat /etc/containers/registries.conf | tail -10"
 # [[registry]]
 # prefix = "docker.io"
 # location = "docker.io"
-# 
+#
 # [[registry.mirror]]
 # location = "registry.kaizengaming.eu/docker-hub-proxy"
 # insecure = true
@@ -137,6 +146,7 @@ export DOCKER_HOST=unix:///var/run/docker.sock
 **Root Cause:** The `insecure = true` flag must be set for the registry mirror to allow HTTP connections. Without it, TLS handshake failures occur.
 
 ### Reset Everything
+
 ```bash
 # Stop and remove machine
 podman machine stop
@@ -150,12 +160,14 @@ bash podman/setup_podman.sh
 ```
 
 ### Check Machine Logs
+
 ```bash
 # View machine logs
 podman machine ssh -- "sudo journalctl -u podman"
 ```
 
 ### Network Issues
+
 ```bash
 # Restart machine network
 podman machine stop
@@ -168,6 +180,7 @@ podman machine ssh -- "ping -c 3 8.8.8.8"
 ## File Transfer
 
 ### Copy Files to/from Machine
+
 ```bash
 # Get machine connection details
 podman machine ssh -- "pwd"
@@ -180,6 +193,7 @@ podman cp /local/path <container>:/path/to/file
 ## Advanced
 
 ### Execute Multiple Commands
+
 ```bash
 podman machine ssh << 'EOF'
 sudo cat /etc/containers/registries.conf
@@ -189,6 +203,7 @@ EOF
 ```
 
 ### Edit Configuration Manually
+
 ```bash
 # SSH into machine
 podman machine ssh
@@ -206,6 +221,7 @@ exit
 ## Setup Commands
 
 ### Initial Setup
+
 ```bash
 # Run full Mac setup (includes Podman)
 bash setup.sh
@@ -218,6 +234,7 @@ make podman-setup
 ```
 
 ### Re-apply Registry Configuration
+
 ```bash
 # If you need to re-run just the registry setup
 bash podman/setup_podman.sh

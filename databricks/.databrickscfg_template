@@ -18,5 +18,3 @@ token = <DATABRICKS_TOKEN>
 #[CLI_PROFILE]
 #host = <DATABRICKS_HOST>
 #auth_type = databricks-cli
-
-

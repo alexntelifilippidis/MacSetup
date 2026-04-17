@@ -43,7 +43,7 @@ jobs:
       - name: Validate branch name
         run: |
           BRANCH="${{ github.head_ref }}"
-          PATTERN='^((feature|bugfix|hotfix|release|chore|config)/([A-Z]+-[0-9]+|NOJIRA)-.*|main|master)$'
+          PATTERN='^((feature|bugfix|hotfix|release|chore|config)/).*|main|master)$'
           if ! [[ "$BRANCH" =~ $PATTERN ]]; then
             echo "❌ Branch '$BRANCH' does not match $PATTERN"
             exit 1

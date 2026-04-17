@@ -71,4 +71,3 @@ pre-commit run --all-files
 ## 📸 Screenshots / terminal output
 
 <!-- Optional. Drag-and-drop an image or paste a code block. -->
-

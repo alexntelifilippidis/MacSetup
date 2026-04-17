@@ -18,9 +18,11 @@ This directory contains configuration and setup scripts for Podman machine with 
 ## Usage
 
 ### Automatic Setup
+
 The setup is automatically run when you execute the main `setup.sh` script from the root directory.
 
 ### Manual Setup
+
 You can run the Podman setup separately:
 
 ```bash
@@ -28,6 +30,7 @@ bash podman/setup_podman.sh
 ```
 
 Or using Make:
+
 ```bash
 make podman-setup
 ```
@@ -58,6 +61,7 @@ location="registry.kaizengaming.eu/docker-hub-proxy"
 ### Benefits
 
 This configuration:
+
 - Routes Docker Hub pulls through the Kaizen Gaming registry mirror
 - Improves pull performance and reduces bandwidth usage
 - Provides caching for frequently used images
@@ -99,17 +103,20 @@ podman machine inspect
 The setup script automatically configures SSH access to the Podman VM. Once configured, you can:
 
 1. **Execute commands inside the VM**:
+
    ```bash
    podman machine ssh -- "sudo cat /etc/containers/registries.conf"
    ```
 
 2. **Interactive SSH session**:
+
    ```bash
    podman machine ssh
    # Now you're inside the Podman VM
    ```
 
 3. **Check SSH connectivity**:
+
    ```bash
    podman machine ssh -- "echo 'SSH is working!'"
    ```
@@ -132,12 +139,14 @@ podman ps -a
 ## Backup
 
 The setup script automatically creates a backup of the original `registries.conf`:
+
 - Original: `/etc/containers/registries.conf`
 - Backup: `/etc/containers/registries.conf.bak`
 
 ## Troubleshooting
 
 ### Machine won't start
+
 ```bash
 # Check machine status
 podman machine list
@@ -148,6 +157,7 @@ podman machine start
 ```
 
 ### Registry mirror not working
+
 ```bash
 # SSH into the machine
 podman machine ssh
@@ -162,6 +172,7 @@ podman machine start
 ```
 
 ### Remove and recreate machine
+
 ```bash
 podman machine stop
 podman machine rm

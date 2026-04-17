@@ -1,6 +1,8 @@
-.PHONY: mac-setup brew-folder podman-setup
+.PHONY: mac-setup brew-folder podman-setup lint fmt update doctor precommit
 
-## ATTENTION! activate virtual environment before running!
+# Why: the old note "activate virtual environment before running" was
+# misleading — `make mac-setup` is pure bash + brew, no Python venv involved.
+# Removed to avoid future confusion.
 
 ##  mac-setup: install packages, .zshrc, .databrickscfg
 mac-setup:
@@ -12,8 +14,28 @@ podman-setup:
 	@echo "Setting up Podman machine..."
 	bash podman/setup_podman.sh
 
-## see brew-folder
-brew-folder :
+## lint: run shellcheck on all shell scripts (same check CI runs)
+lint:
+	@shellcheck setup.sh podman/setup_podman.sh && echo "✅ shellcheck clean"
+
+## fmt: auto-format all shell scripts with shfmt (2-space indent, matches pre-commit)
+fmt:
+	@shfmt -w -i 2 -ci -sr setup.sh podman/setup_podman.sh && echo "✅ formatted"
+
+## update: brew update + upgrade + bundle + cleanup (one command, no thinking)
+update:
+	brew update && brew upgrade && brew bundle --file=./Brewfile && brew cleanup
+
+## doctor: sanity check — brew doctor + podman info
+doctor:
+	@brew doctor && podman info > /dev/null && echo "✅ all systems green"
+
+## precommit: install + run pre-commit on the whole repo
+precommit:
+	@pre-commit install && pre-commit run --all-files
+
+## brew-folder: print Homebrew installation prefix
+brew-folder:
 	brew --prefix
 
 #################################################################################

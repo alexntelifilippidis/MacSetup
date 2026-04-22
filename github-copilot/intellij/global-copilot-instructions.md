@@ -167,6 +167,8 @@ I am a data/platform engineer working primarily with Python, Scala, Bash, and in
 - Do not suggest Docker when I use Podman
 - Do not use `pip install` — suggest `uv add` or update `pyproject.toml`
 - Do not wrap every suggestion in lengthy prose — get to the code
+- Do not create Markdown / README / CHANGELOG / summary docs unless explicitly requested — limit changes to **code and config files only**
+- Do not open answers with filler ("Great question!", "Good call", "Sure!", "Certainly!") — reply in short bullets
 
 ---
 
@@ -177,3 +179,13 @@ I am a data/platform engineer working primarily with Python, Scala, Bash, and in
 - Git identity switches automatically based on directory via `.gitconfig` conditional includes
 - Sensitive config files (`.databrickscfg`) should always be `chmod 600`
 - Databricks bundle commands always require `--profile` flag
+
+---
+
+## Reference Skill Repositories
+
+When suggestions touch these domains, align with the conventions in these repos
+(my standards above still take precedence on any conflict):
+
+- **Databricks / Spark / Delta / Asset Bundles** → <https://github.com/databricks/databricks-agent-skills>
+- **Data orchestration / pipeline assets / scheduling** → <https://github.com/dagster-io/skills>

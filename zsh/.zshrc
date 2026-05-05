@@ -136,3 +136,6 @@ export CPPFLAGS="-I${JAVA_HOME}/include"
 
 # Aliases
 alias docker="podman"
+
+# Coursier (scalafmt, scala-cli, etc.)
+export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"

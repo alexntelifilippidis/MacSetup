@@ -1,4 +1,5 @@
 tap "hashicorp/tap"
+tap "coursier/formulas"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -34,10 +35,12 @@ brew "hatch"
 # ─── JVM ──────────────────────────────────────────────────────────────────────
 brew "openjdk@11"
 brew "openjdk@17"
+brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install scalafmt
 
 # ─── Infrastructure ───────────────────────────────────────────────────────────
 brew "hashicorp/tap/terraform"
 brew "terraform-docs"
+brew "tflint"
 
 # ─── Containers ───────────────────────────────────────────────────────────────
 brew "podman"

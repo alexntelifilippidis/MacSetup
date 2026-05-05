@@ -10,6 +10,7 @@ brew "pre-commit"
 brew "shellcheck"
 brew "shfmt"          # shell formatter — paired with pre-commit hook
 brew "hadolint"
+brew "gitleaks"       # secret scanner — paired with pre-commit hook
 brew "curl"
 brew "unixodbc"
 

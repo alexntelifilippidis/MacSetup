@@ -21,6 +21,15 @@ repos:
       # tokens (e.g. .databrickscfg) during a sleepy Sunday commit.
       - id: detect-private-key
 
+  # Secret scanner — catches GitLab/GitHub PATs, AWS keys, private keys, etc.
+  # Why: `detect-private-key` only catches PEM blocks. `gitleaks` knows about
+  # 100+ token formats (glpat-, ghp_, AKIA…, sk-…) and scans both the diff and
+  # commit messages. Pairs with the brew-installed `gitleaks` binary.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
   # Shell script linter.
   # Why a local hook instead of `shellcheck-precommit`: that upstream hook pulls
   # a Docker image via `docker system info`, which fails on machines that use

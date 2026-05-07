@@ -62,7 +62,7 @@ show_release_notes() {
 
   local info homepage repo tag
   info="$(brew info --json=v2 "$name" 2> /dev/null || echo '{}')"
-  homepage="$(echo "$info" | jq -r '.formulae[0].homepage // .casks[0].homepage // empty')"
+  homepage="$(echo "$info" | jq -r '.formulas[0].homepage // .casks[0].homepage // empty')"
   repo="$(gh_repo_from_url "$homepage")"
 
   if [ -z "$repo" ]; then
@@ -106,5 +106,5 @@ echo "$OUTDATED_JSON" | jq -r '
 done
 
 echo -e "${BOLD}${CYAN}─────────────────────────────────────────────${RESET}"
-echo -e "${YELLOW}Review above. To apply: ${BOLD}make update${RESET}"
+echo -e "${YELLOW}Review above. To apply: ${BOLD}${GREEN}make update${RESET}"
 

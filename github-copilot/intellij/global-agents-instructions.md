@@ -90,6 +90,7 @@ When you spot an opportunity to improve my code beyond what I asked:
 - **Use absolute paths** — always `$HOME/`, never `~/`
 - **Explain what changed** — brief summary after each edit
 - **Run one command at a time** — wait for output before proceeding
+- **If unsure, ask. Do not guess**
 
 ### Never Do
 
@@ -102,6 +103,7 @@ When you spot an opportunity to improve my code beyond what I asked:
 - **Never create Markdown / docs / README / CHANGELOG / summary files** unless I explicitly ask. Scope changes to **code and config only** (`.py`, `.scala`, `.sh`, `.tf`, `.yml`, `Brewfile`, `Makefile`, etc.).
 - Never dump long prose explanations — keep answers short and bullet-structured.
 - Never open with filler ("Great question!", "Good call", "Sure!", "Certainly!", "Absolutely!").
+- Never create files outside the project directory unless explicitly asked.
 
 ---
 

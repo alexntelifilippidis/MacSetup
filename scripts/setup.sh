@@ -142,6 +142,16 @@ copy_if_changed ./github-copilot/intellij/global-copilot-instructions.md "$HOME/
 copy_if_changed ./github-copilot/intellij/global-agents-instructions.md "$HOME/.config/github-copilot/intellij/global-agents-instructions.md"
 copy_if_changed ./github-copilot/intellij/global-git-commit-instructions.md "$HOME/.config/github-copilot/intellij/global-git-commit-instructions.md"
 
+# ── Copilot CLI — Global AGENTS.md ────────────────────────────────────────────
+# Copilot CLI (and any AGENTS.md-compatible agent: Claude Code, OpenCode, Aider)
+# walks upward from the working directory looking for AGENTS.md. Placing it at
+# $HOME makes the rules apply to every repo under $HOME automatically — no need
+# to drop a .github/copilot-instructions.md into each project, and no more
+# "No copilot-instructions.md found. Run /init to generate." prompt.
+section "📜" "Copilot CLI Global copilot-instructions.md" "$CYAN"
+symlink_if_changed "$(pwd)/github-copilot/intellij/global-agents-instructions.md" "$HOME/copilot-instructions.md"
+# Some Copilot CLI versions also probe ~/.copilot/ for instructions.
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${RESET}"

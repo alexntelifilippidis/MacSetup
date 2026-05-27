@@ -139,5 +139,8 @@ alias docker="podman"
 
 # Coursier (scalafmt, scala-cli, etc.)
 export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
-export UV_INDEX_GITLAB_USERNAME='add_username_here'
-export UV_INDEX_GITLAB_PASSWORD='add_password_here'
+
+# ─── Secrets ──────────────────────────────────────────────────────────────────
+# Real tokens live in ~/.secrets.zsh (chmod 600, gitignored).
+# Bootstrapped by setup.sh from zsh/.secrets.zsh.template on first run.
+[ -f "$HOME/.secrets.zsh" ] && source "$HOME/.secrets.zsh"

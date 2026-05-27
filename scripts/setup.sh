@@ -121,6 +121,23 @@ fi
 section "🔗" "Zsh Config (.zshrc symlink)" "$MAGENTA"
 symlink_if_changed "$(pwd)/zsh/.zshrc" "$HOME/.zshrc"
 
+# ── Secrets bootstrap ─────────────────────────────────────────────────────────
+# Real tokens live in zsh/.secrets.zsh (gitignored, chmod 600) and are exposed
+# to the shell via a symlink at ~/.secrets.zsh, sourced from .zshrc.
+# On a fresh Mac we seed the repo copy from the committed template.
+# Re-runs are non-destructive: never overwrite an existing secrets file.
+section "🔐" "Secrets (~/.secrets.zsh)" "$YELLOW"
+if [ ! -f "$(pwd)/zsh/.secrets.zsh" ]; then
+  cp ./zsh/.secrets.zsh.template ./zsh/.secrets.zsh
+  chmod 600 ./zsh/.secrets.zsh
+  echo -e "  ${GREEN}✅ Seeded:     ${MAGENTA}zsh/.secrets.zsh${GREEN} (from template, chmod 600)${RESET}"
+  echo -e "  ${YELLOW}⚠️  Edit zsh/.secrets.zsh and replace REPLACE_ME values with real tokens${RESET}"
+else
+  chmod 600 ./zsh/.secrets.zsh
+  echo -e "  ${CYAN}⏭️  No changes: ${MAGENTA}zsh/.secrets.zsh${CYAN} already exists (perms enforced 600)${RESET}"
+fi
+symlink_if_changed "$(pwd)/zsh/.secrets.zsh" "$HOME/.secrets.zsh"
+
 # ── Databricks CLI ────────────────────────────────────────────────────────────
 section "🧪" "Databricks CLI Config" "$CYAN"
 copy_if_changed ./databricks/.databrickscfg "$HOME/.databrickscfg" 600

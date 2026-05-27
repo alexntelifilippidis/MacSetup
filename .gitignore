@@ -42,3 +42,12 @@ coverage.xml
 # Misc
 *.swp
 *.swo
+
+# Secrets — real values live in $HOME/.secrets.zsh (chmod 600), never in git.
+# Only the .template file is committed.
+zsh/.secrets.zsh
+.secrets.zsh
+*.secret
+.env
+.env.*
+!.env.template

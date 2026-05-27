@@ -35,7 +35,9 @@ brew "hatch"
 # ─── JVM ──────────────────────────────────────────────────────────────────────
 brew "openjdk@11"
 brew "openjdk@17"
+brew "maven"          # JVM build tool (uses JAVA_HOME → openjdk@17)
 brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install scalafmt
+
 
 # ─── Infrastructure ───────────────────────────────────────────────────────────
 brew "hashicorp/tap/terraform"

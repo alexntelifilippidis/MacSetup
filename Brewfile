@@ -64,5 +64,7 @@ cask "pycharm"
 cask "intellij-idea"
 cask "alfred"
 cask "chatgpt"
+cask "claude"             # Anthropic Claude desktop app
+cask "claude-code"        # Claude Code — agentic CLI from Anthropic
 cask "podman-desktop"
 cask "copilot-cli"

@@ -1,5 +1,6 @@
 tap "hashicorp/tap"
 tap "coursier/formulas"
+tap "terraform-linters/tap"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -33,7 +34,6 @@ brew "uv"             # Python package manager / runner — replaces pip/venv
 brew "hatch"
 
 # ─── JVM ──────────────────────────────────────────────────────────────────────
-brew "openjdk@11"
 brew "openjdk@17"
 brew "maven"          # JVM build tool (uses JAVA_HOME → openjdk@17)
 brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install scalafmt
@@ -42,7 +42,6 @@ brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install sc
 # ─── Infrastructure ───────────────────────────────────────────────────────────
 brew "hashicorp/tap/terraform"
 brew "terraform-docs"
-brew "tflint"
 
 # ─── Containers ───────────────────────────────────────────────────────────────
 brew "podman"
@@ -57,6 +56,7 @@ brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 
 # ─── Casks (GUI apps) ─────────────────────────────────────────────────────────
+cask "tflint"  # Terraform linter
 cask "git-credential-manager"
 cask "google-chrome"
 cask "iterm2"

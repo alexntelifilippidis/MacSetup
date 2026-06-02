@@ -68,3 +68,6 @@ cask "claude"             # Anthropic Claude desktop app
 cask "claude-code"        # Claude Code — agentic CLI from Anthropic
 cask "podman-desktop"
 cask "copilot-cli"
+cask "utm"                # Virtual machine manager — for running Windows and Linux VMs on Apple Silicon
+cask "crystalfetch"       # CrystalFetch is a macOS application that creates Windows® 11 installer ISO images.
+cask "spotify"

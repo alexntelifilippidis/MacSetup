@@ -47,9 +47,9 @@
       }
     ]
   },
-  "theme": "dark",
   "statusLine": {
     "type": "command",
     "command": "/bin/bash /Users/a.ntelifilippidis/.claude/statusline-command.sh"
-  }
+  },
+  "theme": "dark"
 }

@@ -1,5 +1,6 @@
 tap "hashicorp/tap"
 tap "coursier/formulas"
+tap "terraform-linters/tap"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -33,7 +34,6 @@ brew "uv"             # Python package manager / runner — replaces pip/venv
 brew "hatch"
 
 # ─── JVM ──────────────────────────────────────────────────────────────────────
-brew "openjdk@11"
 brew "openjdk@17"
 brew "maven"          # JVM build tool (uses JAVA_HOME → openjdk@17)
 brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install scalafmt
@@ -42,7 +42,6 @@ brew "coursier/formulas/coursier"   # Scala artifact fetcher; used to install sc
 # ─── Infrastructure ───────────────────────────────────────────────────────────
 brew "hashicorp/tap/terraform"
 brew "terraform-docs"
-brew "tflint"
 
 # ─── Containers ───────────────────────────────────────────────────────────────
 brew "podman"
@@ -57,6 +56,7 @@ brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 
 # ─── Casks (GUI apps) ─────────────────────────────────────────────────────────
+cask "tflint"  # Terraform linter
 cask "git-credential-manager"
 cask "google-chrome"
 cask "iterm2"
@@ -64,5 +64,10 @@ cask "pycharm"
 cask "intellij-idea"
 cask "alfred"
 cask "chatgpt"
+cask "claude"             # Anthropic Claude desktop app
+cask "claude-code"        # Claude Code — agentic CLI from Anthropic
 cask "podman-desktop"
 cask "copilot-cli"
+cask "utm"                # Virtual machine manager — for running Windows and Linux VMs on Apple Silicon
+cask "crystalfetch"       # CrystalFetch is a macOS application that creates Windows® 11 installer ISO images.
+cask "spotify"

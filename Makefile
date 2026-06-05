@@ -20,7 +20,7 @@ lint:
 
 ## fmt: auto-format all shell scripts with shfmt (2-space indent, matches pre-commit)
 fmt:
-	@shfmt -w -i 2 -ci -sr setup.sh podman/setup_podman.sh && echo "✅ formatted"
+	@shfmt -w -i 2 -ci -sr scripts/setup.sh podman/setup_podman.sh scripts/whats_new.sh && echo "✅ formatted"
 
 ## update: brew update + upgrade + bundle + cleanup (one command, no thinking)
 update:

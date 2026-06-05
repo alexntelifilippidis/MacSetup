@@ -169,6 +169,13 @@ section "📜" "Copilot CLI Global copilot-instructions.md" "$CYAN"
 symlink_if_changed "$(pwd)/github-copilot/intellij/global-agents-instructions.md" "$HOME/copilot-instructions.md"
 # Some Copilot CLI versions also probe ~/.copilot/ for instructions.
 
+# ── Claude Code ───────────────────────────────────────────────────────────────
+section "🤖" "Claude Code Config" "$MAGENTA"
+mkdir -p "$HOME/.claude"
+symlink_if_changed "$(pwd)/claude/settings.json" "$HOME/.claude/settings.json"
+symlink_if_changed "$(pwd)/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+symlink_if_changed "$(pwd)/claude/CLAUDE.md" "$HOME/CLAUDE.md"
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓${RESET}"

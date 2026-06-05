@@ -26,7 +26,9 @@ jobs:
           sudo chmod +x /usr/local/bin/shfmt
 
       - name: ShellCheck
-        run: shellcheck scripts/setup.sh podman/setup_podman.sh
+        run: |
+          find src/scripts -name '*.sh' | sort | xargs shellcheck -x --severity=warning
+          shellcheck -x --severity=warning src/dotfiles/claude/statusline-command.sh
 
       - uses: actions/setup-python@v5
         with:
@@ -43,7 +45,7 @@ jobs:
       - name: Validate branch name
         run: |
           BRANCH="${{ github.head_ref }}"
-          PATTERN='^((feature|bugfix|hotfix|release|chore|config)/).*|main|master)$'
+          PATTERN='^((feature|bugfix|hotfix|release|chore|config)/.+|main|master)$'
           if ! [[ "$BRANCH" =~ $PATTERN ]]; then
             echo "❌ Branch '$BRANCH' does not match $PATTERN"
             exit 1

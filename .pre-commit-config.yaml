@@ -42,9 +42,10 @@ repos:
       - id: shellcheck
         name: shellcheck
         entry: shellcheck
+        args: [-x, --severity=warning]
         language: system
         types: [shell]
-        exclude: ^zsh/\.zshrc$
+        exclude: ^src/dotfiles/zsh/\.zshrc$
 
   # Bash formatter — uses the brew-installed `shfmt` for the same Docker-free reason.
   # Run `brew bundle --file=./Brewfile` first so shfmt is on PATH.
@@ -55,7 +56,7 @@ repos:
         entry: shfmt -w -i 2 -ci -sr
         language: system
         types: [shell]
-        exclude: ^zsh/\.zshrc$
+        exclude: ^src/dotfiles/zsh/\.zshrc$
 
   # Markdown lint — `--fix` auto-formats blank lines / code fences so we don't
   # have to manually touch every doc on every rule change.

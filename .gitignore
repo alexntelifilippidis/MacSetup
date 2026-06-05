@@ -25,7 +25,7 @@ ENV/
 .idea/
 
 # Databricks
-databricks/.databrickscfg
+src/dotfiles/databricks/.databrickscfg
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
@@ -45,7 +45,7 @@ coverage.xml
 
 # Secrets — real values live in $HOME/.secrets.zsh (chmod 600), never in git.
 # Only the .template file is committed.
-zsh/.secrets.zsh
+src/dotfiles/zsh/.secrets.zsh
 .secrets.zsh
 *.secret
 .env

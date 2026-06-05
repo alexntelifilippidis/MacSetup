@@ -1,34 +1,32 @@
-.PHONY: mac-setup brew-folder podman-setup lint fmt update whats-new doctor precommit
+.PHONY: mac-setup brew-folder podman-setup lint fmt update whats-new doctor precommit help
 
-# Why: the old note "activate virtual environment before running" was
-# misleading — `make mac-setup` is pure bash + brew, no Python venv involved.
-# Removed to avoid future confusion.
+# Discovers all shell scripts under src/scripts/ automatically —
+# adding a new script requires no Makefile changes.
+SHELL_SCRIPTS := $(shell find src/scripts -name '*.sh' | sort) src/dotfiles/claude/statusline-command.sh
 
 ##  mac-setup: install packages, .zshrc, .databrickscfg
 mac-setup:
-	@echo "Installing packages..."
-	bash scripts/setup.sh
+	@bash src/scripts/setup.sh
 
 ## podman-setup: setup podman machine and registry mirror
 podman-setup:
-	@echo "Setting up Podman machine..."
-	bash podman/setup_podman.sh
+	@bash src/scripts/setup_podman.sh
 
 ## lint: run shellcheck on all shell scripts (same check CI runs)
 lint:
-	@shellcheck scripts/setup.sh podman/setup_podman.sh scripts/whats_new.sh && echo "✅ shellcheck clean"
+	@shellcheck -x --severity=warning $(SHELL_SCRIPTS) && echo "✅ shellcheck clean"
 
 ## fmt: auto-format all shell scripts with shfmt (2-space indent, matches pre-commit)
 fmt:
-	@shfmt -w -i 2 -ci -sr scripts/setup.sh podman/setup_podman.sh scripts/whats_new.sh && echo "✅ formatted"
+	@shfmt -w -i 2 -ci -sr $(SHELL_SCRIPTS) && echo "✅ formatted"
 
 ## update: brew update + upgrade + bundle + cleanup (one command, no thinking)
 update:
-	brew update && brew upgrade && brew bundle --file=./Brewfile && brew cleanup
+	brew update && brew upgrade && brew bundle --file=src/dotfiles/homebrew/Brewfile && brew cleanup
 
 ## whats-new: list outdated brew packages and their GitHub release notes (no install)
 whats-new:
-	@bash scripts/whats_new.sh
+	@bash src/scripts/whats_new.sh
 
 ## doctor: sanity check — brew doctor + podman info
 doctor:

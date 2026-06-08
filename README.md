@@ -10,7 +10,6 @@ driven by a `make` interface and a modular `src/scripts/lib/` setup library.
 MacSetup/
 ├── Makefile
 ├── README.md
-├── pyproject.toml          # uv project + ruff/pre-commit config
 ├── .pre-commit-config.yaml
 ├── .github/
 │   ├── pull_request_template.md

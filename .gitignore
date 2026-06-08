@@ -51,3 +51,6 @@ src/dotfiles/zsh/.secrets.zsh
 .env
 .env.*
 !.env.template
+
+# Claude local overrides — machine-specific, never committed
+src/dotfiles/claude/settings.local.json

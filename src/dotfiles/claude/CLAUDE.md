@@ -59,38 +59,6 @@ When you spot an improvement opportunity beyond what I asked:
 
 ---
 
-## Command Preferences
-
-```bash
-# Python
-uv run pytest -v
-uv run ruff format && uv run ruff check --fix
-uv add <package>
-
-# Shell / macOS
-brew bundle --file=./Brewfile
-pre-commit run --all-files
-
-# Databricks (always include --profile)
-databricks bundle validate --target <target> --profile <profile>
-databricks bundle deploy   --target <target> --profile <profile>
-
-# Git branch pattern
-git checkout -b (feature|bugfix|hotfix|chore)/([A-Z]+-\d+|NOJIRA)-description
-```
-
----
-
-## Security Rules
-
-- Credentials and tokens → `chmod 600`, always
-- `.databrickscfg` → `chmod 600`, no exceptions
-- Never print or log secrets
-- Use environment variables for all sensitive values
-- Least-privilege on all IAM/service accounts
-
----
-
 ## Engineering Principles
 
 Reinforce: SOLID (especially SRP and OCP), DRY, observability (structured logging over print), testability (pure functions, dependency injection), immutable infra, least-privilege IAM.
@@ -119,35 +87,11 @@ Reinforce: SOLID (especially SRP and OCP), DRY, observability (structured loggin
 
 ---
 
-## Code Review Rigor
-
-When reviewing diffs (mine or others'):
-
-- **Correctness** → logic, edge cases, race conditions, off-by-ones
-- **Security** → injection, secrets, authz, PII handling, supply chain
-- **Performance** → N+1s, unbounded loops, allocation in hot paths, query plans
-- **Maintainability** → naming, cohesion, coupling, testability
-- **Operational** → logging, metrics, error handling, rollback path
-
-Order findings by severity: 🔴 blocker → 🟡 should-fix → 🟢 nit.
-
----
-
-## Testing Philosophy
-
-- **Test pyramid**: many unit, fewer integration, minimal E2E.
-- Tests assert **behavior**, not implementation. Avoid mocking what you don't own.
-- For data pipelines: golden-file tests + schema/contract tests > unit tests of transforms.
-- Flaky test = broken test. Fix the root cause; never `@retry`.
-
----
-
 ## Operational Excellence
 
 - Every new service/job needs: SLO target, runbook hook, alert thresholds, rollback procedure.
 - Migrations: backward-compatible deploys (expand → migrate → contract).
 - Feature flags for risky changes; default off in prod.
-- Terraform changes: `plan` is read-only, `apply` needs explicit confirmation + state backup.
 
 ---
 
@@ -157,3 +101,18 @@ Order findings by severity: 🔴 blocker → 🟡 should-fix → 🟢 nit.
 - When proposing a change, include: **what / why / risk / rollback**.
 - For ambiguous requests, ask **one** clarifying question — the one that most changes the answer.
 - Use `🦇 Upgrade available:` for tangential improvements; never silently expand scope.
+
+---
+
+@.claude/rules/code-style.md
+@.claude/rules/api-conventions.md
+@.claude/rules/pr.md
+@.claude/rules/git/github.md
+@.claude/rules/git/gitlab.md
+@.claude/rules/repos/terraform.md
+@.claude/rules/repos/python.md
+@.claude/rules/repos/scala.md
+@.claude/rules/repos/sql.md
+@.claude/agents/code-reviewer.md
+@.claude/agents/security-auditor.md
+@.claude/skills/testing-patterns/SKILL.md

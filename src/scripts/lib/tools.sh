@@ -18,8 +18,18 @@ setup_copilot() {
 
 setup_claude() {
   section "🤖" "Claude Code Config" "$MAGENTA"
-  mkdir -p "$HOME/.claude"
-  symlink_if_changed "$REPO_ROOT/src/dotfiles/claude/settings.json" "$HOME/.claude/settings.json"
-  symlink_if_changed "$REPO_ROOT/src/dotfiles/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
-  symlink_if_changed "$REPO_ROOT/src/dotfiles/claude/CLAUDE.md" "$HOME/CLAUDE.md"
+  local src_dir="$REPO_ROOT/src/dotfiles/claude"
+  local dst_dir="$HOME/.claude"
+
+  # CLAUDE.md → ~/CLAUDE.md (global instructions root, not inside ~/.claude/)
+  symlink_if_changed "$src_dir/CLAUDE.md" "$HOME/CLAUDE.md"
+
+  # Symlink all other files preserving subdirectory structure
+  while IFS= read -r -d '' src_file; do
+    rel="${src_file#"$src_dir/"}"
+    [[ "$rel" == "CLAUDE.md" ]] && continue
+    dst="$dst_dir/$rel"
+    mkdir -p "$(dirname "$dst")"
+    symlink_if_changed "$src_file" "$dst"
+  done < <(find "$src_dir" -type f -print0 | sort -z)
 }

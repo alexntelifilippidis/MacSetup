@@ -12,6 +12,14 @@
 - Use `gh` for all GitHub operations (PRs, issues, releases, checks)
 - Never use the GitHub web UI for things `gh` can do
 
+## Authentication
+
+Never ask the user for a token. Retrieve from git-credential-manager and pass inline — never print, echo, or store the token in a visible variable:
+
+```bash
+GH_TOKEN=$(printf "protocol=https\nhost=github.com\n" | git credential fill | awk -F= '/^password/{print $2}') gh <command>
+```
+
 ## Workflow
 
 - Default branch: `main`
@@ -31,6 +39,15 @@
 - Draft PRs for WIP — `gh pr create --draft`
 - Request review only when CI is green
 - Delete branch after merge
+
+## Creating a PR
+
+When the user says "create pr":
+
+1. Retrieve the `GH_TOKEN` from git-credential-manager (see Authentication above)
+2. Read the PR template from the repo: `.github/pull_request_template.md`
+3. Fill **every section** of the template from the diff — no placeholder text, no empty headings, no skipped checklist items; delete sections marked optional if not applicable
+4. Run `GH_TOKEN=$GH_TOKEN gh pr create --title "..." --body "..."`
 
 ## SSH
 

@@ -12,6 +12,16 @@
 - Use `glab` for all GitLab operations (MRs, issues, pipelines, CI)
 - Never use the GitLab web UI for things `glab` can do
 
+## Authentication
+
+Never ask the user for a token. Retrieve from git-credential-manager and pass inline — never print, echo, or store the token in a visible variable:
+
+```bash
+GITLAB_TOKEN=$(printf "protocol=https\nhost=gitlab.com\n" | git credential fill | awk -F= '/^password/{print $2}') glab <command>
+```
+
+For self-hosted GitLab, replace `gitlab.com` with the actual hostname.
+
 ## Workflow
 
 - Default branch: `main` or `master` (check per repo)
@@ -57,8 +67,13 @@ type(scope): what it does
 **When the user says "create mr":**
 
 1. Ask for the ticket number if not already provided
-2. Run `glab mr create` and fill **every section** of the MR template from the diff — no placeholder text, no empty headings, no skipped checklist items
-3. Set the ticket reference in the MR title or description
+2. Retrieve `GITLAB_TOKEN` from git-credential-manager (see Authentication above)
+3. Read the MR template from the repo — check in order:
+   - `.gitlab/merge_request_templates/Default.md`
+   - `.gitlab/merge_request_templates/*.md` (use the first found)
+   - `.github/pull_request_template.md` (fallback if no GitLab template)
+4. Fill **every section** of the template from the diff — no placeholder text, no empty headings, no skipped checklist items; delete optional sections if not applicable
+5. Run `GITLAB_TOKEN=$GITLAB_TOKEN glab mr create --title "..." --description "..."`
 
 ## MR Rules
 

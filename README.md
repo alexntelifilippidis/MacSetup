@@ -31,6 +31,63 @@ MacSetup/
         └── whats_new.sh    # outdated brew packages + GitHub release notes
 ```
 
+## 🧭 Why this layout?
+
+The repo separates **what gets deployed** (`src/dotfiles/`) from **how it gets
+deployed** (`src/scripts/`). Each lives under `src/` so the repo root stays
+reserved for project-level metadata (`Makefile`, `README.md`, `pyproject.toml`,
+`.github/`, `.pre-commit-config.yaml`) — nothing in the root is symlinked
+anywhere.
+
+### `src/dotfiles/<tool>/` — one folder per tool
+
+Every config file that lands in `$HOME` (or `$HOME/.<tool>/`) lives under
+`src/dotfiles/<tool>/`. Grouping by **tool** instead of by file type means:
+
+- Adding a new tool is one folder — no scattered edits across the tree
+- A folder owns everything for its tool: configs, templates, and any
+  tool-specific docs
+- Deleting a tool is `git rm -r src/dotfiles/<tool>/` — clean removal
+- The folder name is the obvious place to look (`git/`, `homebrew/`, `claude/`)
+
+### `src/scripts/` — orchestrator + library
+
+- `setup.sh` is a **pure orchestrator** — it exports `REPO_ROOT`, sources the
+  `lib/` modules, and calls `setup_*` functions in order. No logic lives here.
+- `src/scripts/lib/*.sh` are **self-contained modules**. Each module sources
+  its own dependencies via `BASH_SOURCE[0]`, so `lib/podman.sh` can be tested
+  in isolation without `setup.sh` running first.
+- Standalone entry points (`setup_podman.sh`, `whats_new.sh`) live next to
+  `setup.sh` so they're equally discoverable.
+
+### Two deployment primitives, never inlined
+
+`lib/helpers.sh` exports exactly two file-deployment helpers:
+
+| Helper                | When to use                          |
+| --------------------- | ------------------------------------ |
+| `symlink_if_changed`  | Source of truth lives in this repo; edits to the dotfile in `$HOME` should reflect back |
+| `copy_if_changed`     | Files that must be locally mutable (secrets, machine-specific tokens) without dirtying the repo |
+
+Module functions **never** inline `cp` or `ln -sf` — this keeps deployment
+idempotent and ensures consistent logging across every tool.
+
+### Why a Makefile on top?
+
+The `Makefile` is the **stable user interface**. Implementation underneath can
+move (split modules, rename libs, swap shellcheck for another linter) without
+changing what the user types. CI and local dev share the exact same commands
+(`make lint`, `make fmt`, `pre-commit run --all-files`) — no drift between
+"works on my machine" and "works in CI."
+
+### Why split git identity into three files?
+
+`src/dotfiles/git/.gitconfig` is the entrypoint. It uses `includeIf
+"gitdir:..."` to load `.gitconfig-personal` when working under
+`~/Projects/Personal/` and `.gitconfig-work` under `~/Projects/Work/`. Two
+identities, zero per-repo `git config` commands, zero accidental commits with
+the wrong email.
+
 ## 🚀 Quick Start
 
 ```bash

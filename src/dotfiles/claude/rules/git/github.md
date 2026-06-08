@@ -2,8 +2,8 @@
 
 ## Identity
 
-- Username: `alexntelifilippidis`
-- Email: `alexntelifilippidis@gmail.com`
+- Username: `<github-username>` — set in `~/.gitconfig` or `~/.claude/settings.local.json`
+- Email: `<personal-email>` — set in `~/.gitconfig` or `~/.claude/settings.local.json`
 - Repos live under: `~/Projects/Personal/`
 - Identity auto-applied via `includeIf "gitdir:~/Projects/Personal/"` in `~/.gitconfig`
 

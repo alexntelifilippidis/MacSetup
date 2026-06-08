@@ -90,7 +90,7 @@ ZSH_THEME="kaizen"
 # Add wisely, as too many plugins slow down shell startup.
 
 # Source Homebrew-installed Zsh plugins
-plugins=(git)
+plugins=(git virtualenv)
 # Homebrew plugin sourcing
 [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"

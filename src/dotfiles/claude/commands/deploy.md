@@ -1,6 +1,6 @@
 # /deploy — Deploy Dotfiles & Setup
 
-Run the MacSetup deployment pipeline.
+Deploy MacSetup dotfiles and tooling to the local machine.
 
 ## Usage
 
@@ -8,35 +8,44 @@ Run the MacSetup deployment pipeline.
 /deploy [target]
 ```
 
-Targets: `dotfiles` | `homebrew` | `podman` | `all` (default: `all`)
+| Target | Command | What it does |
+|--------|---------|-------------|
+| `all` *(default)* | `make mac-setup` | Homebrew + dotfiles + symlinks + Podman |
+| `homebrew` | `brew bundle --file=$HOME/.config/homebrew/Brewfile` | Packages only |
+| `podman` | `make podman-setup` | Podman machine + registry mirror |
+| `dotfiles` | `make mac-setup` | Dotfiles + symlinks (skips Homebrew) |
 
 ## Steps
 
-1. Run pre-flight checks:
+### 1. Pre-flight — stop and report if any step fails
 
-   ```bash
-   pre-commit run --all-files
-   make lint
-   make fmt
-   make doctor
-   ```
+```bash
+pre-commit run --all-files   # must pass
+make lint                    # shellcheck clean
+make fmt                     # shfmt clean
+make doctor                  # environment healthy
+```
 
-2. Deploy:
+### 2. Deploy
 
-   ```bash
-   make mac-setup       # full: homebrew + dotfiles + symlinks + podman
-   make podman-setup    # podman machine + registry mirror only
-   ```
+Run the command for the chosen target (default: `all`).
 
-3. Verify:
+### 3. Post-deploy verification
 
-   ```bash
-   make doctor
-   ```
+```bash
+make doctor
+```
 
-## Safety
+Verify secret files have correct permissions:
 
-- Always runs in staging / dry-run first if available
-- Destructive operations (`rm`, overwrite) require explicit confirmation
-- Symlinks use `symlink_if_changed` — idempotent, no silent overwrites
-- Secret files (`chmod 600`) are verified post-deploy
+```bash
+stat -f "%OLp %N" "$HOME/.secrets.zsh" "$HOME/.databrickscfg" 2>/dev/null
+```
+
+Both must show `600`. Fix with `chmod 600` if not.
+
+## Safety Rules
+
+- `symlink_if_changed` is idempotent — safe to re-run
+- Require explicit confirmation before any destructive operation (`rm`, overwrite)
+- Never run `make mac-setup` on a machine with uncommitted local dotfile changes without confirming

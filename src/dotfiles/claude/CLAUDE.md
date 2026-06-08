@@ -106,7 +106,6 @@ Reinforce: SOLID (especially SRP and OCP), DRY, observability (structured loggin
 
 @.claude/rules/code-style.md
 @.claude/rules/api-conventions.md
-@.claude/rules/pr.md
 @.claude/rules/git/github.md
 @.claude/rules/git/gitlab.md
 @.claude/rules/repos/terraform.md

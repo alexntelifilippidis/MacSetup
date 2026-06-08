@@ -1,6 +1,8 @@
 tap "hashicorp/tap"
 tap "coursier/formulas"
 tap "terraform-linters/tap"
+tap "dashlane/tap"
+tap "homebrew/cask-fonts"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -49,6 +51,7 @@ brew "podman-compose"
 
 # ─── Data platform ────────────────────────────────────────────────────────────
 brew "databricks"
+brew "dashlane/tap/dashlane-cli"
 
 # ─── Zsh enhancements ─────────────────────────────────────────────────────────
 brew "zsh-autosuggestions"
@@ -71,3 +74,6 @@ cask "copilot-cli"
 cask "utm"                # Virtual machine manager — for running Windows and Linux VMs on Apple Silicon
 cask "crystalfetch"       # CrystalFetch is a macOS application that creates Windows® 11 installer ISO images.
 cask "spotify"
+
+# ─── Fonts ────────────────────────────────────────────────────────────────────
+cask "font-meslo-lg-nerd-font"   # Powerline glyphs — required for kaizen zsh theme

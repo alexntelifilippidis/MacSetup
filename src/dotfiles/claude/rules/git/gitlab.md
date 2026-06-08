@@ -2,8 +2,8 @@
 
 ## Identity
 
-- Username: `a.ntelifilippidis`
-- Email: `a.ntelifilippidis@kaizengaming.com`
+- Username: `<gitlab-username>` — set in `~/.gitconfig` or `~/.claude/settings.local.json`
+- Email: `<work-email>` — set in `~/.gitconfig` or `~/.claude/settings.local.json`
 - Repos live under: `~/Projects/Work/`
 - Identity auto-applied via `includeIf "gitdir:~/Projects/Work/"` in `~/.gitconfig`
 

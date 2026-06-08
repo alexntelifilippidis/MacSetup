@@ -24,8 +24,11 @@ Files in this directory are symlinked into `$HOME/.claude/` by `make mac-setup`.
 │       ├── scala.md                 Scala 2.12+, SBT, Spark, Delta Lake
 │       └── sql.md                   Spark SQL / dbt: formatting, naming, Delta patterns
 ├── commands/
+│   ├── deploy.md                    /deploy — dotfile + setup deployment
+│   ├── lint.md                      /lint — shellcheck + shfmt on changed files
 │   ├── review.md                    /review — severity-ordered code review
-│   └── deploy.md                    /deploy — dotfile + setup deployment
+│   ├── security.md                  /security — secrets, injection, PII, IAM audit
+│   └── test.md                      /test — run test suite for current project type
 ├── skills/
 │   └── testing-patterns/
 │       └── SKILL.md                 test pyramid, bats, golden-file, pytest patterns

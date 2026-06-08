@@ -1,194 +1,155 @@
-# 📁 Repository Name: MacSetup
+# 🍎 MacSetup
 
-## 🗂️ Structure:
+Automated, idempotent setup for a Mac development environment — Homebrew, Zsh, Git
+identities, Databricks, Podman, GitHub Copilot, Claude Code, and all dotfiles —
+driven by a `make` interface and a modular `src/scripts/lib/` setup library.
 
-```
-mac-dev-setup/
-├── Brewfile
-├── setup.sh
-├── zsh/
-│   └── .zshrc
-├── databricks/
-│   └── .databrickscfg
-├── git-credential-manager/
-│   ├── .gitconfig
-│   ├── .gitconfig-personal
-│   └── .gitconfig-work
-├── podman/
-│   ├── setup_podman.sh
-│   └── registries.conf
+## 🗂️ Structure
+
+```text
+MacSetup/
+├── Makefile
 ├── README.md
+├── pyproject.toml          # uv project + ruff/pre-commit config
+├── .pre-commit-config.yaml
+├── .github/
+│   ├── pull_request_template.md
+│   └── workflows/          # CI: lint + format + commit conventions
+└── src/
+    ├── dotfiles/           # config files symlinked / copied into $HOME
+    │   ├── claude/         # Claude Code: rules, agents, commands, skills, hooks
+    │   ├── databricks/     # .databrickscfg (gitignored — real values)
+    │   ├── git/            # .gitconfig + work/personal identity includes
+    │   ├── github-copilot/ # global Copilot instructions
+    │   ├── homebrew/       # Brewfile
+    │   ├── podman/         # registries.conf
+    │   └── zsh/            # .zshrc + .secrets.zsh (gitignored)
+    └── scripts/
+        ├── lib/            # self-contained setup_* modules sourced by setup.sh
+        ├── setup.sh        # orchestrator — calls setup_* functions from lib/
+        ├── setup_podman.sh # standalone podman machine + registry setup
+        └── whats_new.sh    # outdated brew packages + GitHub release notes
 ```
-
-Automated setup for a Mac development environment using:
-
-- [Homebrew](https://brew.sh/)
-- [Oh My Zsh](https://ohmyz.sh/)
-- Databricks CLI configuration
-- Developer-friendly defaults
 
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/yourusername/mac-dev-setup.git
-cd mac-dev-setup
-chmod +x setup.sh
-./setup.sh
+git clone https://github.com/alexntelifilippidis/MacSetup.git "$HOME/Projects/Personal/MacSetup"
+cd "$HOME/Projects/Personal/MacSetup"
+make mac-setup
 ```
 
-Make sure to customize .databrickscfg with your actual token/workspace before running.
+`make mac-setup` is **idempotent** — safe to re-run any time. It will only update
+files whose content has changed.
 
-🧰 Contents
-	•	Brewfile: List of Homebrew packages to install
-	•	setup.sh: Main setup script
-	•	zsh/.zshrc: Your Zsh config (Oh My Zsh based)
-	•	databricks/.databrickscfg: Template for Databricks CLI
-	•	git-credential-manager/: Git configuration files
-	•	podman/: Podman machine setup with registry mirror configuration
+Before first run, populate machine-local secrets:
 
----
+- `$HOME/.databrickscfg` — generated from `src/dotfiles/databricks/.databrickscfg`
+  (gitignored); fill in your workspace host + token, then `chmod 600`
+- `$HOME/.secrets.zsh` — your shell environment secrets (gitignored), `chmod 600`
 
-### 🛠️ `setup.sh`
+## 🧰 Make Targets
 
 ```bash
-#!/bin/bash
-
-echo "🔧 Setting up your Mac dev environment..."
-
-# Install Homebrew
-if ! command -v brew &> /dev/null; then
-  echo "🍺 Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
-# Install packages from Brewfile
-echo "📦 Installing Brew packages..."
-brew bundle --file=./Brewfile
-
-# Install Oh My Zsh
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  echo "💻 Installing Oh My Zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
-# Symlink .zshrc
-echo "🔗 Linking .zshrc..."
-ln -sf "$(pwd)/zsh/.zshrc" "$HOME/.zshrc"
-
-# Configure Databricks CLI
-echo "🧪 Setting up Databricks CLI config..."
-mkdir -p "$HOME/.databricks"
-cp ./databricks/.databrickscfg "$HOME/.databrickscfg"
-chmod 600 "$HOME/.databrickscfg"
-
-echo "✅ Done! Restart your terminal to see the changes."
+make mac-setup     # full setup: homebrew, dotfiles, symlinks, podman, claude, copilot
+make podman-setup  # podman machine + registry mirror only
+make lint          # shellcheck -x --severity=warning on all .sh files
+make fmt           # shfmt -i 2 -ci -sr on all .sh files
+make update        # brew update + upgrade + bundle + cleanup
+make whats-new     # outdated brew packages + their GitHub release notes
+make doctor        # brew doctor + podman info sanity check
+make precommit     # install + run pre-commit on the whole repo
+make help          # show this list (auto-generated from `## ` doc comments)
 ```
 
-⸻
+## 🔧 What `setup.sh` does
 
-### 📦 Brewfile
+`src/scripts/setup.sh` is a pure orchestrator. It exports `REPO_ROOT`, sources the
+modules under `src/scripts/lib/`, and runs each `setup_*` function in order:
 
-```
-tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/cask-fonts"
+| Function          | Module          | Result |
+| ----------------- | --------------- | ------ |
+| `setup_homebrew`  | `homebrew.sh`   | Install Homebrew + `brew bundle` |
+| `setup_zsh`       | `zsh.sh`        | Oh My Zsh + symlink `.zshrc`, `.secrets.zsh` |
+| `setup_databricks`| `databricks.sh` | Copy `.databrickscfg` (chmod 600) |
+| `setup_git`       | `git.sh`        | Symlink `.gitconfig` + work / personal includes |
+| `setup_podman`    | `podman.sh`     | Podman machine + Docker Hub mirror |
+| `setup_copilot`   | `tools.sh`      | GitHub Copilot global instructions |
+| `setup_claude`    | `tools.sh`      | Symlink every file under `src/dotfiles/claude/` into `$HOME/.claude/` |
 
-brew "git"
-brew "python"
-brew "node"
-brew "zsh"
-brew "databricks-cli"
+All file deployment goes through `copy_if_changed` and `symlink_if_changed` in
+`lib/helpers.sh` — content-aware, no silent overwrites, idempotent re-runs.
 
-cask "visual-studio-code"
-cask "google-chrome"
-cask "iterm2"
-```
+## 🤖 Claude Code Config
 
-⸻
+`src/dotfiles/claude/` contains a modular Claude Code configuration that is
+auto-symlinked to `$HOME/.claude/` (with `CLAUDE.md` landing at `$HOME/CLAUDE.md`).
 
-### 🐚 zsh/.zshrc
+It includes:
 
-```
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="agnoster"
-plugins=(git z)
+- `rules/` — code style, API conventions, PR workflow, git identities
+  (GitHub personal + GitLab work), and repo-type conventions (Terraform, Python, Scala, SQL)
+- `agents/` — code-reviewer and security-auditor sub-agents
+- `commands/` — `/review` and `/deploy` slash commands
+- `skills/` — testing-patterns skill
+- `hooks/` — pre-edit shellcheck + shfmt validation
 
-source $ZSH/oh-my-zsh.sh
+See [`src/dotfiles/claude/README.md`](src/dotfiles/claude/README.md) for details.
 
-export PATH="/opt/homebrew/bin:$PATH"
+## 🐋 Podman
 
-```
+`src/scripts/setup_podman.sh` configures a Podman machine with a Docker Hub mirror.
 
-⸻
+What it does:
 
-### 🔐 databricks/.databrickscfg
+1. Initializes and starts the Podman machine (idempotent)
+2. SSHes into the VM and appends a registry mirror to
+   `/etc/containers/registries.conf` (with backup, deduped)
+3. Mirror: `registry.kaizengaming.eu/docker-hub-proxy` → `docker.io`
 
-```
-[DEFAULT]
-host = https://<your-workspace-url>
-token = <your-personal-access-token>
+Run standalone with `make podman-setup`.
 
-```
-
-⸻
-
-### 🐋 Podman Setup
-
-The setup automatically configures Podman machine with SSH access and a custom Docker Hub registry mirror.
-
-#### What it does:
-
-1. **Initializes and starts Podman machine** - Creates and launches the VM
-2. **Configures SSH access** - Sets up `podman machine ssh` for easy management
-3. **Sets up Docker Hub mirror** - Uses `registry.kaizengaming.eu/docker-hub-proxy`
-4. **Appends to `/etc/containers/registries.conf`** - Adds mirror config inside the Podman VM via SSH
-
-#### How the Registry Configuration Works:
-
-The script uses `podman machine ssh` to:
-
-- SSH into the Podman machine VM
-- Create a backup of the original `/etc/containers/registries.conf`
-- Append the registry mirror configuration to the file
-- Verify the configuration to avoid duplicates
-
-#### Manual Podman Setup
-
-If you want to run Podman setup separately:
+SSH into the VM:
 
 ```bash
-bash ./podman/setup_podman.sh
-
-# Or using Make
-make podman-setup
-```
-
-#### SSH into Podman Machine
-
-```bash
-# Interactive SSH session
-podman machine ssh
-
-# Execute single command inside the VM
+podman machine ssh                                          # interactive
 podman machine ssh -- "sudo cat /etc/containers/registries.conf"
-
-# List all machines
 podman machine list
 ```
 
-#### Registry Configuration
+## 🧪 Development
 
-The following configuration is **appended** to `/etc/containers/registries.conf` inside the Podman machine:
+Pre-commit, shellcheck, shfmt, and markdownlint run on every commit and in CI.
 
-```toml
-[[registry]]
-location="docker.io"
-[[registry.mirror]]
-location="registry.kaizengaming.eu/docker-hub-proxy"
+```bash
+pre-commit run --all-files   # must pass before opening a PR
+make lint                    # shellcheck clean
+make fmt                     # shfmt clean
+make doctor                  # environment healthy
 ```
 
-#### Quick Reference
+## 🌿 Git Conventions
 
-See [`podman/QUICK_REFERENCE.md`](podman/QUICK_REFERENCE.md) for detailed SSH commands and Podman operations.
+Branch naming — must match CI regex
+`^((feature|bugfix|hotfix|release|chore|config)/([A-Z]+-\d+|NOJIRA)-.*|main|master)$`:
 
-⸻
+```bash
+git checkout -b chore/NOJIRA-update-brewfile
+git checkout -b feature/KAI-123-add-thing      # work repos with a ticket
+```
+
+Commits use conventional commits, imperative mood:
+
+```text
+type(scope): what it does
+# types: feat | fix | chore | ci | docs | perf | refactor | revert | style | test
+```
+
+Open PRs with `gh pr create` and fill **every section** of
+`.github/pull_request_template.md`.
+
+## 🔒 Security
+
+- Credential files (`.databrickscfg`, `.secrets.zsh`) → `chmod 600` always, gitignored
+- No tokens, passwords, or workspace URLs committed
+- Git credentials are managed by `git-credential-manager` (installed via Brewfile)

@@ -2,7 +2,7 @@
 # Kaizen — amuse layout with brand colors (orange / dark blue / white)
 # Must use Powerline font, for  to render.
 
-ZSH_THEME_GIT_PROMPT_PREFIX=" on %F{033}🌿 "   # dark blue branch
+ZSH_THEME_GIT_PROMPT_PREFIX=" on %F{208} "   # dark blue branch
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}!"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[yellow]%}?"
@@ -12,7 +12,7 @@ ZSH_THEME_RUBY_PROMPT_PREFIX="%{$fg_bold[red]%}‹"
 ZSH_THEME_RUBY_PROMPT_SUFFIX="›%{$reset_color%}"
 
 PROMPT='
-%F{208}▶%F{033}◀%{$reset_color%}  📁 %F{208}%B%~%b%{$reset_color%}$(git_prompt_info) ⌚ %F{255}%B%*%b%{$reset_color%}
+%F{208}▶%F{033}◀%{$reset_color%}  📁 %F{033}%B%~%b%{$reset_color%}$(git_prompt_info) ⌚ %F{255}%B%*%b%{$reset_color%}
 $ '
 
 RPROMPT='$(ruby_prompt_info)'

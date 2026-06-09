@@ -2,7 +2,7 @@
 # Kaizen — amuse layout with brand colors (orange / dark blue / white)
 # Must use Powerline font, for  to render.
 
-ZSH_THEME_GIT_PROMPT_PREFIX=" on %F{033} "   # dark blue branch
+ZSH_THEME_GIT_PROMPT_PREFIX=" on %F{033}🌿 "   # dark blue branch
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}!"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[yellow]%}?"

@@ -16,6 +16,7 @@ setup_zsh() {
   section "🎨" "Zsh Themes" "$CYAN"
   mkdir -p "$HOME/.oh-my-zsh/custom/themes"
   symlink_if_changed "$REPO_ROOT/src/dotfiles/zsh/themes/kaizen.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/kaizen.zsh-theme"
+  symlink_if_changed "$REPO_ROOT/src/dotfiles/zsh/themes/batman.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/batman.zsh-theme"
 
   section "🔗" "Zsh Config (.zshrc symlink)" "$MAGENTA"
   symlink_if_changed "$REPO_ROOT/src/dotfiles/zsh/.zshrc" "$HOME/.zshrc"

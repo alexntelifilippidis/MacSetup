@@ -42,7 +42,7 @@ _kaizen_path() {
 }
 
 PROMPT='
-%F{${_KAIZEN_C_ORANGE}}▶%F{${_KAIZEN_C_BLUE}}◀%{$reset_color%}  📁 %F{${_KAIZEN_C_BLUE}}%B$(_kaizen_path)%b%{$reset_color%}$(git_prompt_info) ⌚ %F{${_KAIZEN_C_LIGHT_BLUE}}%B%*%b%{$reset_color%}
+%F{${_KAIZEN_C_ORANGE}}▶%F{${_KAIZEN_C_BLUE}}◀%{$reset_color%}  ${_KAIZEN_FOLDER} %F{${_KAIZEN_C_BLUE}}%B$(_kaizen_path)%b%{$reset_color%}$(git_prompt_info) ${_KAIZEN_CLOCK} %F{${_KAIZEN_C_LIGHT_BLUE}}%B%*%b%{$reset_color%}
 $ '
 
 RPROMPT='$(ruby_prompt_info)'

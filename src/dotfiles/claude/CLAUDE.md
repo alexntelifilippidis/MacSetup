@@ -45,6 +45,7 @@ When you spot an improvement opportunity beyond what I asked:
 - Make changes idempotent — scripts must be safe to re-run
 - Use `$HOME/` paths in scripts, never `~/`
 - If unsure, ask. Do not guess.
+- After fetching or downloading a file solely to read it, delete it immediately after — leave no temporary artifacts.
 
 ## Never Do
 

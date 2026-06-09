@@ -8,7 +8,7 @@ _BATMAN_FOLDER=$''     # nf-fa-folder
 _BATMAN_CLOCK=$''      # nf-fa-clock-o
 _BATMAN_BAT=$'󰭟'    # nf-md-bat 󰭟
 
-ZSH_THEME_GIT_PROMPT_PREFIX=" %B%F{225}on%b %B%F{63}${_BATMAN_BRANCH}%b %B%F{220}"
+ZSH_THEME_GIT_PROMPT_PREFIX=" %B%F{255}on%b %B%F{63}${_BATMAN_BRANCH}%b %B%F{220}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%b%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%B%F{197}!%b"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%B%F{220}?%b"
@@ -18,15 +18,28 @@ _batman_path() {
   local p="${(%):-%~}"
   local out="" first=true
 
-  local parts=("${(@s:/:)p}")
+  local -a parts=("${(@s:/:)p}")
+  local last_idx=0 i
+  for (( i = ${#parts[@]}; i >= 1; i-- )); do
+    if [[ -n "${parts[$i]}" ]]; then
+      last_idx=$i
+      break
+    fi
+  done
+
+  local idx=0 col
   for part in "${parts[@]}"; do
+    idx=$(( idx + 1 ))
+    col=255
+    [[ $idx -eq $last_idx ]] && col=220
+
     if $first; then
       [[ -z "$part" ]] && { out+="%B%F{63}/%b%{$reset_color%}"; first=false; continue; }
-      [[ "$part" == "~" ]] && out+="%B%F{220}~%b%{$reset_color%}" || out+="%B%F{220}${part}%b%{$reset_color%}"
+      [[ "$part" == "~" ]] && out+="%B%F{${col}}~%b%{$reset_color%}" || out+="%B%F{${col}}${part}%b%{$reset_color%}"
       first=false
     else
       [[ -z "$part" ]] && continue
-      out+="%B%F{63}/%b%B%F{220}${part}%b%{$reset_color%}"
+      out+="%B%F{63}/%b%B%F{${col}}${part}%b%{$reset_color%}"
     fi
   done
 

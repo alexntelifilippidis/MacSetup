@@ -2,6 +2,7 @@ tap "hashicorp/tap"
 tap "coursier/formulas"
 tap "terraform-linters/tap"
 tap "dashlane/tap"
+tap "databricks/tap"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -10,6 +11,7 @@ brew "glab"
 brew "pre-commit"
 brew "shellcheck"
 brew "shfmt"          # shell formatter — paired with pre-commit hook
+brew "bats-core"      # Bash Automated Testing System — shell script test runner
 brew "hadolint"
 brew "gitleaks"       # secret scanner — paired with pre-commit hook
 brew "curl"

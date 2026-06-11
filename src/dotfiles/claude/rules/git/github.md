@@ -20,6 +20,15 @@ Never ask the user for a token. Retrieve from git-credential-manager and pass in
 GH_TOKEN=$(printf "protocol=https\nhost=github.com\n" | git credential fill | awk -F= '/^password/{print $2}') gh <command>
 ```
 
+**Before overriding with a fetched token:** check whether `GH_TOKEN` (or `GITHUB_TOKEN`) is already set in the environment — if it is, skip the credential-manager lookup and use it directly. Overriding a valid env token with a credential-manager fetch will cause auth failures.
+
+**To find the correct hostname** for credential lookup when auth fails, inspect the remote URL first:
+
+```bash
+git remote get-url origin
+# e.g. https://github.com/... → use host=github.com
+```
+
 ## Workflow
 
 - Default branch: `main`

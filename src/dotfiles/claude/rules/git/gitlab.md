@@ -22,6 +22,15 @@ GITLAB_TOKEN=$(printf "protocol=https\nhost=gitlab.com\n" | git credential fill 
 
 For self-hosted GitLab, replace `gitlab.com` with the actual hostname.
 
+**Before overriding with a fetched token:** check whether `GITLAB_TOKEN` (or `GLAB_TOKEN`) is already set in the environment — if it is, skip the credential-manager lookup and use it directly. Overriding a valid env token with a credential-manager fetch will cause auth failures.
+
+**To find the correct hostname** for credential lookup when auth fails, inspect the remote URL first:
+
+```bash
+git remote get-url origin
+# e.g. https://gitlab.kaizengaming.com/... → use host=gitlab.kaizengaming.com
+```
+
 ## Workflow
 
 - Default branch: `main` or `master` (check per repo)

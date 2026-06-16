@@ -36,11 +36,15 @@ week=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 # pr.number present when an open PR exists for the current branch
 pr_num=$(echo "$input" | jq -r '.pr.number // empty')
 
-# ── ANSI colors ───────────────────────────────────────────────────────────────
-CYAN='\033[36m'
-GREEN='\033[32m'
-YELLOW='\033[33m'
-RED='\033[31m'
+# ── Colors — kaizen palette (256-color) ───────────────────────────────────────
+# 208=orange (primary), 033=blue (accent), 110=light-blue (accent light), 255=white
+ORANGE='\033[38;5;208m'     # primary — model label, branch, cost
+BLUE='\033[38;5;33m'        # accent — dir path
+LIGHT_BLUE='\033[38;5;110m' # accent light — PR, time
+WHITE='\033[38;5;255m'      # text — duration
+GREEN='\033[32m'            # semantic — staged (ready to commit)
+YELLOW='\033[33m'           # semantic — modified (unstaged)
+RED='\033[31m'              # semantic — high context usage
 BOLD='\033[1m'
 DIM='\033[2m'
 RESET='\033[0m'
@@ -71,17 +75,17 @@ IFS='|' read -r branch staged modified < "$CACHE"
 
 # ── Row 1: [Model]  📁 dir  🌿 branch  +N  ~N  PR #N ─────────────────────────
 dir="${cwd##*/}"
-row1="${CYAN}${BOLD}[${model}]${RESET}  📁 ${dir}"
+row1="${ORANGE}${BOLD}[${model}]${RESET}  📁${BLUE}${dir}${RESET}"
 
 if [ -n "$branch" ]; then
-  row1="${row1}  🌿 ${branch}"
+  row1="${row1}  🌿${ORANGE}${branch}${RESET}"
   # staged = index changes ready to commit; modified = unstaged working-tree changes
   [ "${staged:-0}" -gt 0 ] && row1="${row1} ${GREEN}+${staged}${RESET}"
   [ "${modified:-0}" -gt 0 ] && row1="${row1} ${YELLOW}~${modified}${RESET}"
 fi
 
 # Show PR number when Claude has found an open PR for the current branch
-[ -n "$pr_num" ] && row1="${row1}  ${DIM}PR #${pr_num}${RESET}"
+[ -n "$pr_num" ] && row1="${row1}  ${DIM}${LIGHT_BLUE}PR #${pr_num}${RESET}"
 
 # ── Context progress bar ──────────────────────────────────────────────────────
 # Color threshold: green < 70 %, yellow 70–89 %, red ≥ 90 %
@@ -124,7 +128,7 @@ if [ -n "$five_h" ] || [ -n "$week" ]; then
 fi
 
 # ── Row 2: [bar] pct%  💰 cost  ⏱️ Xm Ys  [rate limits] ──────────────────────
-row2="${bar_color}${bar}${RESET} ${pct_int}%  💰 ${YELLOW}${cost_fmt}${RESET}  ⏱️  ${mins}m ${secs}s${rate_info}"
+row2="${bar_color}${bar}${RESET} ${pct_int}%  💰${ORANGE}${cost_fmt}${RESET}  ⏱️${WHITE}${mins}m ${secs}s${RESET}${rate_info}"
 
 # printf '%b' interprets ANSI escapes more reliably than echo -e across shells
 printf '%b\n' "$row1"

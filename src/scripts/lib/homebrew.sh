@@ -29,6 +29,9 @@ setup_homebrew() {
   mkdir -p "$HOME/.config/homebrew"
   symlink_if_changed "$REPO_ROOT/src/dotfiles/homebrew/Brewfile" "$HOME/.config/homebrew/Brewfile"
 
+  # Atlassian tap requires explicit trust before brew bundle will install it
+  brew trust atlassian/acli &> /dev/null || true
+
   if brew bundle check --file="$REPO_ROOT/src/dotfiles/homebrew/Brewfile" &> /dev/null; then
     echo -e "  ${CYAN}⏭️  No changes: All packages from Brewfile already installed${RESET}"
   else

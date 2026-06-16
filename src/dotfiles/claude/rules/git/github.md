@@ -36,6 +36,16 @@ git remote get-url origin
 - Read `.github/pull_request_template.md` before opening a PR
 - Squash merge preferred for feature branches; merge commit for release branches
 
+## Commits
+
+Conventional commits, imperative mood:
+
+```
+type(scope): what it does
+```
+
+- **No `Co-authored-by` trailers** — strip any Copilot or AI co-author lines before committing
+
 ## Branch Naming
 
 ```

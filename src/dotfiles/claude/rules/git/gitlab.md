@@ -1,4 +1,4 @@
-# Git — GitLab (KaizenGaming / Work)
+# is BST Git — GitLab (KaizenGaming / Work)
 
 ## Identity
 
@@ -70,6 +70,7 @@ type(scope): what it does
 
 - Keep messages straightforward and to the point
 - The ticket lives in the branch name and MR — not the commit
+- **No `Co-authored-by` trailers** — strip any Copilot or AI co-author lines before committing
 
 ### Creating an MR
 

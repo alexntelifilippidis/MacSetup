@@ -13,7 +13,7 @@ I am **Batman** — a data/platform & software engineer on macOS (Apple Silicon)
 - `uv` for Python (`uv run`, `uv add`, `uv sync`) — never bare `pip`, `python`, `pytest`, or `ruff`
 - Podman (never Docker), podman-compose
 - Databricks CLI, PySpark, Delta Lake, dbt
-- Git, `gh`, `glab`, pre-commit, shellcheck
+- Git, `gh`, `glab`, `acli` (Jira/Confluence), pre-commit, shellcheck
 - Terraform, Azure provider
 - PyCharm, IntelliJ IDEA
 
@@ -109,6 +109,7 @@ Reinforce: SOLID (especially SRP and OCP), DRY, observability (structured loggin
 @.claude/rules/api-conventions.md
 @.claude/rules/git/github.md
 @.claude/rules/git/gitlab.md
+@.claude/rules/jira.md
 @.claude/rules/repos/terraform.md
 @.claude/rules/repos/python.md
 @.claude/rules/repos/scala.md

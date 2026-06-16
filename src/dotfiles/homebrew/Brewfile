@@ -3,6 +3,7 @@ tap "coursier/formulas"
 tap "terraform-linters/tap"
 tap "dashlane/tap"
 tap "databricks/tap"
+tap "atlassian/homebrew-acli"
 
 # ─── Core CLI ─────────────────────────────────────────────────────────────────
 brew "git"
@@ -53,6 +54,7 @@ brew "podman-compose"
 # ─── Data platform ────────────────────────────────────────────────────────────
 brew "databricks"
 brew "dashlane/tap/dashlane-cli"
+brew "acli"               # Atlassian CLI — Jira, Confluence from the terminal
 
 # ─── Zsh enhancements ─────────────────────────────────────────────────────────
 brew "zsh-autosuggestions"

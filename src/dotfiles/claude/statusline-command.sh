@@ -5,7 +5,7 @@
 # permission-mode change, or vim-mode toggle. Prints two rows to stdout.
 #
 # Row 1:  [Model]  📁 dir  🌿 branch  +staged  ~modified  PR #N
-# Row 2:  [████░░░░░░] 40%  💰 $0.0042  ⏱️ 3m 12s  rl 5h:23% 7d:41%
+# Row 2:  [████░░░░░░] 40%  💰 $0.0042  ⏱️ 3m 12s
 
 input=$(cat)
 
@@ -28,10 +28,6 @@ pct_int=$(printf '%.0f' "${pct_raw:-0}")
 # session_id is stable for the lifetime of a session and unique across sessions —
 # use it as the cache key so concurrent sessions don't share git state.
 session_id=$(echo "$input" | jq -r '.session_id // "default"')
-
-# rate_limits only present for Claude.ai Pro/Max subscribers after first response
-five_h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-week=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 
 # pr.number present when an open PR exists for the current branch
 pr_num=$(echo "$input" | jq -r '.pr.number // empty')
@@ -75,10 +71,10 @@ IFS='|' read -r branch staged modified < "$CACHE"
 
 # ── Row 1: [Model]  📁 dir  🌿 branch  +N  ~N  PR #N ─────────────────────────
 dir="${cwd##*/}"
-row1="${ORANGE}${BOLD}[${model}]${RESET}  📁${BLUE}${dir}${RESET}"
+row1="${ORANGE}${BOLD}[${model}]${RESET}  📁 ${BLUE}${dir}${RESET}"
 
 if [ -n "$branch" ]; then
-  row1="${row1}  🌿${ORANGE}${branch}${RESET}"
+  row1="${row1}  🌿 ${ORANGE}${branch}${RESET}"
   # staged = index changes ready to commit; modified = unstaged working-tree changes
   [ "${staged:-0}" -gt 0 ] && row1="${row1} ${GREEN}+${staged}${RESET}"
   [ "${modified:-0}" -gt 0 ] && row1="${row1} ${YELLOW}~${modified}${RESET}"
@@ -118,17 +114,8 @@ secs=$((dur_sec % 60))
 # 4 decimal places keeps small costs (e.g. $0.0012) readable
 cost_fmt=$(LANG=C /usr/bin/printf '$%.4f' "$cost")
 
-# ── Rate limits (Pro/Max only — absent for API-key users) ─────────────────────
-# five_hour = 5-hour rolling window; seven_day = weekly window
-rate_info=""
-if [ -n "$five_h" ] || [ -n "$week" ]; then
-  five_h_int=$(printf '%.0f' "${five_h:-0}")
-  week_int=$(printf '%.0f' "${week:-0}")
-  rate_info="  ${DIM}rl 5h:${five_h_int}% 7d:${week_int}%${RESET}"
-fi
-
-# ── Row 2: [bar] pct%  💰 cost  ⏱️ Xm Ys  [rate limits] ──────────────────────
-row2="${bar_color}${bar}${RESET} ${pct_int}%  💰${ORANGE}${cost_fmt}${RESET}  ⏱️${WHITE}${mins}m ${secs}s${RESET}${rate_info}"
+# ── Row 2: [bar] pct%  💰 cost  ⏱️ Xm Ys ─────────────────────────────────────
+row2="${bar_color}${bar}${RESET} ${pct_int}%  💰 ${ORANGE}${cost_fmt}${RESET}  ⏱️ ${WHITE}${mins}m ${secs}s${RESET}"
 
 # printf '%b' interprets ANSI escapes more reliably than echo -e across shells
 printf '%b\n' "$row1"

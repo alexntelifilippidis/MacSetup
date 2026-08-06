@@ -1,8 +1,9 @@
-.PHONY: mac-setup brew-folder podman-setup lint fmt update whats-new doctor precommit help
+.PHONY: mac-setup brew-folder podman-setup claude-setup claude-plugins claude-validate lint fmt update whats-new doctor precommit help
 
-# Discovers all shell scripts under src/scripts/ automatically —
-# adding a new script requires no Makefile changes.
-SHELL_SCRIPTS := $(shell find src/scripts -name '*.sh' | sort) src/dotfiles/claude/statusline-command.sh
+# Discovers every shell script in the repo automatically — adding a new script,
+# or a new plugin hook, requires no Makefile changes.
+SHELL_SCRIPTS := $(shell find src/scripts plugins -name '*.sh' | sort) src/dotfiles/claude/statusline-command.sh
+PLUGIN := plugins/batman
 
 ##  mac-setup: install packages, .zshrc, .databrickscfg
 mac-setup:
@@ -11,6 +12,23 @@ mac-setup:
 ## podman-setup: setup podman machine and registry mirror
 podman-setup:
 	@bash src/scripts/setup_podman.sh
+
+## claude-setup: deploy Claude host config (CLAUDE.md, statusline, settings keys) only
+claude-setup:
+	@bash -c 'source src/scripts/lib/claude.sh && setup_claude'
+
+## claude-validate: validate the batcave marketplace + batman plugin manifests
+claude-validate:
+	@claude plugin validate . && claude plugin validate $(PLUGIN)
+
+## claude-plugins: register the batcave marketplace and install batman via the CLI
+# `make claude-setup` already declares both in settings.json — this is the imperative
+# route for a machine where you'd rather not touch settings.json, plus a live check.
+claude-plugins: claude-validate
+	@claude plugin marketplace add "$(CURDIR)" || true
+	@claude plugin install batman@batcave || true
+	@claude plugin list
+	@echo "↻ restart Claude Code to load the plugin"
 
 ## lint: run shellcheck on all shell scripts (same check CI runs)
 lint:
@@ -28,9 +46,12 @@ update:
 whats-new:
 	@bash src/scripts/whats_new.sh
 
-## doctor: sanity check — brew doctor + podman info
+## doctor: sanity check — brew doctor + podman info + Claude plugin manifests
 doctor:
-	@brew doctor && podman info > /dev/null && echo "✅ all systems green"
+	@brew doctor
+	@podman info > /dev/null
+	@claude plugin validate . > /dev/null && claude plugin validate $(PLUGIN) > /dev/null
+	@echo "✅ all systems green"
 
 ## precommit: install + run pre-commit on the whole repo
 precommit:

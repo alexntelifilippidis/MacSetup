@@ -27,8 +27,43 @@ jobs:
 
       - name: ShellCheck
         run: |
-          find src/scripts -name '*.sh' | sort | xargs shellcheck -x --severity=warning
+          find src/scripts plugins -name '*.sh' | sort | xargs shellcheck -x --severity=warning
           shellcheck -x --severity=warning src/dotfiles/claude/statusline-command.sh
+
+      # The claude CLI isn't available on the runner, so validate what we can:
+      # both manifests parse, and every plugin the marketplace lists exists with
+      # a plugin.json and a matching name. Catches the rename-and-forget class of
+      # break that only shows up as "plugin not found" on a fresh install.
+      - name: Validate Claude marketplace manifests
+        run: |
+          jq -e . .claude-plugin/marketplace.json > /dev/null
+          jq -r '.plugins[].source' .claude-plugin/marketplace.json | while read -r src; do
+            manifest="${src#./}/.claude-plugin/plugin.json"
+            test -f "$manifest" || { echo "❌ missing $manifest"; exit 1; }
+            jq -e . "$manifest" > /dev/null
+          done
+          jq -r '.plugins[] | "\(.name) \(.source)"' .claude-plugin/marketplace.json |
+            while read -r name src; do
+              actual=$(jq -r .name "${src#./}/.claude-plugin/plugin.json")
+              test "$name" = "$actual" || {
+                echo "❌ marketplace lists '$name' but ${src} declares '$actual'"; exit 1; }
+            done
+          # Every SKILL.md needs name + description frontmatter or Claude never loads it.
+          find plugins -name SKILL.md | while read -r skill; do
+            head -1 "$skill" | grep -qx -- '---' || { echo "❌ $skill: no frontmatter"; exit 1; }
+            grep -qE '^name:' "$skill" || { echo "❌ $skill: no name:"; exit 1; }
+            grep -qE '^description:' "$skill" || { echo "❌ $skill: no description:"; exit 1; }
+          done
+          # A token in .mcp.json is a leak: every server must use OAuth or a local CLI
+          # profile. gitleaks catches known token formats; this catches the shape.
+          for mcp in $(find plugins -name '.mcp.json'); do
+            jq -e . "$mcp" > /dev/null
+            jq -e 'any(.mcpServers[]?; (.headers // {}) | keys[]? | ascii_downcase == "authorization")' \
+              "$mcp" > /dev/null && { echo "❌ $mcp: Authorization header — use OAuth"; exit 1; }
+            grep -qiE '"(token|password|secret|api_?key)" *:' "$mcp" \
+              && { echo "❌ $mcp: inline credential key"; exit 1; }
+          done
+          echo "✅ marketplace manifests OK"
 
       - uses: actions/setup-python@v5
         with:

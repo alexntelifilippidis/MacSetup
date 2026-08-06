@@ -16,8 +16,8 @@ source "$SCRIPT_DIR/lib/zsh.sh"
 source "$SCRIPT_DIR/lib/databricks.sh"
 # shellcheck source=./lib/git.sh
 source "$SCRIPT_DIR/lib/git.sh"
-# shellcheck source=./lib/tools.sh
-source "$SCRIPT_DIR/lib/tools.sh"
+# shellcheck source=./lib/claude.sh
+source "$SCRIPT_DIR/lib/claude.sh"
 # shellcheck source=./lib/podman.sh
 source "$SCRIPT_DIR/lib/podman.sh"
 
@@ -33,7 +33,6 @@ setup_zsh
 setup_databricks
 setup_git
 setup_podman
-setup_copilot
 setup_claude
 
 echo ""

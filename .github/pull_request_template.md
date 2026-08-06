@@ -60,7 +60,7 @@ pre-commit run --all-files
 
 ## ✅ Checklist
 
-- [ ] Branch name matches `^((feature|bugfix|hotfix|release|chore|config)/([A-Z]+-\d+|NOJIRA)-.*|main|master)$`
+- [ ] Branch name matches `^((feature|bugfix|hotfix|release|chore|config)/.+|main|master)$` (the actual check in `ci.yml`)
 - [ ] PR title is a valid conventional commit (`feat(scope): ...`)
 - [ ] `pre-commit run --all-files` passes locally
 - [ ] `make lint` passes (shellcheck clean)

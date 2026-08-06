@@ -32,7 +32,7 @@ session_id=$(echo "$input" | jq -r '.session_id // "default"')
 # pr.number present when an open PR exists for the current branch
 pr_num=$(echo "$input" | jq -r '.pr.number // empty')
 
-# ── Colors — kaizen palette (256-color) ───────────────────────────────────────
+# ── Colors — orange/blue palette (256-color) ──────────────────────────────────
 # 208=orange (primary), 033=blue (accent), 110=light-blue (accent light), 255=white
 ORANGE='\033[38;5;208m'     # primary — model label, branch, cost
 BLUE='\033[38;5;33m'        # accent — dir path

@@ -30,9 +30,6 @@ brew "tree"
 brew "mas"            # Mac App Store CLI — lets us automate store apps
 
 # ─── Python ───────────────────────────────────────────────────────────────────
-brew "python@3.10"
-brew "python@3.11"
-brew "python@3.12"
 brew "python@3.13"
 brew "uv"             # Python package manager / runner — replaces pip/venv
 brew "hatch"
@@ -69,14 +66,14 @@ cask "iterm2"
 cask "pycharm"
 cask "intellij-idea"
 cask "alfred"
-cask "chatgpt"
-cask "claude"             # Anthropic Claude desktop app
-cask "claude-code"        # Claude Code — agentic CLI from Anthropic
-cask "podman-desktop"
-cask "copilot-cli"
-cask "utm"                # Virtual machine manager — for running Windows and Linux VMs on Apple Silicon
-cask "crystalfetch"       # CrystalFetch is a macOS application that creates Windows® 11 installer ISO images.
-cask "spotify"
+# cask "chatgpt"
+# cask "claude"             # Anthropic Claude desktop app
+# cask "claude-code"        # Claude Code — agentic CLI from Anthropic
+# cask "podman-desktop"
+# cask "copilot-cli"
+# cask "utm"                # Virtual machine manager — for running Windows and Linux VMs on Apple Silicon
+# cask "crystalfetch"       # CrystalFetch is a macOS application that creates Windows® 11 installer ISO images.
+# cask "spotify"
 
 # ─── Fonts ────────────────────────────────────────────────────────────────────
 cask "font-meslo-lg-nerd-font"   # Powerline glyphs — required for kaizen zsh theme

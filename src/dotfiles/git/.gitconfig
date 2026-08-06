@@ -1,3 +1,11 @@
+# Fallback identity. MUST stay ABOVE the includeIf blocks: git resolves a key by
+# last-value-wins, and an includeIf is expanded where it appears — a [user] block
+# placed after the includes silently overrides them, so every personal commit
+# would go out with the work email and nothing would warn you.
+[user]
+    name = a.ntelifilippidis
+    email = a.ntelifilippidis@kaizengaming.com
+
 [includeIf "gitdir:~/Projects/Work/"]
     path = ~/Projects/Work/.gitconfig
 
@@ -5,11 +13,9 @@
     path = ~/Projects/Personal/.gitconfig
 
 [credential]
+	# Empty value first clears any helper inherited from the system config,
+	# so gcm-core is the only one that runs.
 	helper =
 	helper = /usr/local/share/gcm-core/git-credential-manager
 [credential "https://dev.azure.com"]
 	useHttpPath = true
-
-[user]
-    name = a.ntelifilippidis
-    email = a.ntelifilippidis@kaizengaming.com

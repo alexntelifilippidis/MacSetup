@@ -1,0 +1,30 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "batcave",
+  "description": "Personal Claude Code marketplace — Batman's engineering standards, agents, commands and hooks for macOS data/platform work",
+  "owner": {
+    "name": "alexntelifilippidis",
+    "url": "https://github.com/alexntelifilippidis/MacSetup"
+  },
+  "plugins": [
+    {
+      "name": "batman",
+      "description": "Personal Claude Code plugin — MR/PR creation, Jira ticket drafting, Confluence page publishing, and MCP setup docs for GitHub, GitLab, Jira/Confluence and Databricks.",
+      "author": {
+        "name": "alexntelifilippidis"
+      },
+      "category": "development",
+      "keywords": [
+        "mcp",
+        "docs",
+        "github",
+        "gitlab",
+        "jira",
+        "confluence",
+        "databricks"
+      ],
+      "source": "./plugins/batman",
+      "homepage": "https://github.com/alexntelifilippidis/MacSetup/tree/master/src/dotfiles/claude/plugins/batman"
+    }
+  ]
+}

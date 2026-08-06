@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "batman",
+  "version": "0.1.0",
+  "description": "Personal Claude Code plugin — MR/PR creation, Jira ticket drafting, Confluence page publishing, and MCP setup docs for GitHub, GitLab, Jira/Confluence and Databricks.",
+  "author": {
+    "name": "alexntelifilippidis"
+  },
+  "homepage": "https://github.com/alexntelifilippidis/MacSetup/tree/master/src/dotfiles/claude/plugins/batman",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "docs",
+    "github",
+    "gitlab",
+    "jira",
+    "confluence",
+    "databricks"
+  ]
+}

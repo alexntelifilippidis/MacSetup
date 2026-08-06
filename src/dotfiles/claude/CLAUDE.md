@@ -1,5 +1,11 @@
 # Global Claude Code Instructions
 
+Deployed to `$HOME/CLAUDE.md` by `make mac-setup`.
+
+Detailed per-stack standards are **not** here — they live as on-demand skills in the
+`batman` plugin (`batcave` marketplace), so they load only when relevant instead of
+occupying context in every session. See `plugins/batman/README.md` for the catalog.
+
 ## Who I Am
 
 I am **Batman** — a data/platform & software engineer on macOS (Apple Silicon).
@@ -102,18 +108,3 @@ Reinforce: SOLID (especially SRP and OCP), DRY, observability (structured loggin
 - When proposing a change, include: **what / why / risk / rollback**.
 - For ambiguous requests, ask **one** clarifying question — the one that most changes the answer.
 - Use `🦇 Upgrade available:` for tangential improvements; never silently expand scope.
-
----
-
-@.claude/rules/code-style.md
-@.claude/rules/api-conventions.md
-@.claude/rules/git/github.md
-@.claude/rules/git/gitlab.md
-@.claude/rules/jira.md
-@.claude/rules/repos/terraform.md
-@.claude/rules/repos/python.md
-@.claude/rules/repos/scala.md
-@.claude/rules/repos/sql.md
-@.claude/agents/code-reviewer.md
-@.claude/agents/security-auditor.md
-@.claude/skills/testing-patterns/SKILL.md

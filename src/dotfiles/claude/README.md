@@ -1,58 +1,38 @@
-# Claude Code Configuration
+# 🦇 Claude Code
 
-Files in this directory are symlinked into `$HOME/.claude/` by `make mac-setup`.
-`CLAUDE.md` is the exception — it lands at `$HOME/CLAUDE.md` (Claude Code's global instructions root).
+Both halves of Claude Code config live here, colocated for easy tracking:
 
-## Structure
+| Half                                    | What                                             | Deployed?          |
+|------------------------------------------|--------------------------------------------------|--------------------|
+| **Host config** (this dir)               | `CLAUDE.md`, statusline, `settings.local.json`    | ✅ symlinked into `$HOME` |
+| **`batcave` marketplace** ([`plugins/batman/`](plugins/batman/README.md)) | Skills, agents, MCP docs | ❌ read in place, never deployed |
 
-```
-.claude/
-├── CLAUDE.md                        → ~/CLAUDE.md
-├── settings.json                    → ~/.claude/settings.json
-├── settings.local.json              → ~/.claude/settings.local.json  (gitignored values)
-├── statusline-command.sh            → ~/.claude/statusline-command.sh
-├── rules/
-│   ├── code-style.md                shell + Python formatting rules
-│   ├── api-conventions.md           Databricks, Terraform, secrets
-│   ├── pr.md                        branch naming, commit format, pre-PR checklist
-│   ├── git/
-│   │   ├── github.md                personal GitHub identity + gh CLI workflow
-│   │   └── gitlab.md                work GitLab (KaizenGaming) identity + glab CLI workflow
-│   └── repos/
-│       ├── terraform.md             Azure provider, state, plan/apply conventions
-│       ├── python.md                uv, ruff, pytest, src/ layout
-│       ├── scala.md                 Scala 2.12+, SBT, Spark, Delta Lake
-│       └── sql.md                   Spark SQL / dbt: formatting, naming, Delta patterns
-├── commands/
-│   ├── deploy.md                    /deploy — dotfile + setup deployment
-│   ├── lint.md                      /lint — shellcheck + shfmt on changed files
-│   ├── review.md                    /review — severity-ordered code review
-│   ├── security.md                  /security — secrets, injection, PII, IAM audit
-│   └── test.md                      /test — run test suite for current project type
-├── skills/
-│   └── testing-patterns/
-│       └── SKILL.md                 test pyramid, bats, golden-file, pytest patterns
-├── agents/
-│   ├── code-reviewer.md             5-axis review agent (correctness/security/perf/…)
-│   └── security-auditor.md          secrets, injection, PII, IAM audit agent
-└── hooks/
-    └── validate-code.sh             pre-edit shellcheck + shfmt validation
-```
+## 📦 Host config
 
-## How it works
+| File                    | Destination        |
+|-------------------------|---------------------|
+| `CLAUDE.md`             | `$HOME/CLAUDE.md` — **not** inside `.claude/` |
+| `statusline-command.sh` | `$HOME/.claude/`     |
+| `settings.local.json`   | `$HOME/.claude/` (gitignored, absent on a fresh clone) |
 
-`setup_claude` in `src/scripts/lib/tools.sh` uses a `find` loop — every file under this
-directory is automatically symlinked to the equivalent path under `~/.claude/` on the
-next `make mac-setup`. Adding a new rule file requires no changes to the setup script.
+Three symlinks, nothing else — deployed by `setup_claude` in
+[`lib/claude.sh`](../../scripts/lib/claude.sh) via `make mac-setup` or `make claude-setup`.
 
-`CLAUDE.md` imports the rule, agent, and skill files via `@.claude/<path>` so their
-content is loaded into every Claude Code session automatically.
+## ⚙️ `settings.json` ownership
 
-## Documentation
+Claude Code and its installers (`aicodemetricsd`, `claude-island`) write
+`~/.claude/settings.json` directly. Marketplace registration happens through the `claude`
+CLI — `make claude-plugins` — which owns that file's schema.
 
-- [Claude Code overview](https://docs.anthropic.com/en/docs/claude-code)
-- [Settings reference](https://docs.anthropic.com/en/docs/claude-code/settings)
-- [Hooks reference](https://docs.anthropic.com/en/docs/claude-code/hooks)
-- [Status line](https://docs.anthropic.com/en/docs/claude-code/status-line)
-- [Custom commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
-- [Custom agents](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
+## ➕ Adding something
+
+Skill, agent, or MCP doc → [`plugins/batman/`](plugins/batman/README.md). A file goes
+directly in *this* dir only when it must live at a fixed `$HOME` path a plugin can't
+reach — wire it in `_claude_link_host_files`.
+
+## 📖 Docs
+
+[Overview](https://code.claude.com/docs/en/overview) ·
+[Settings](https://code.claude.com/docs/en/settings) ·
+[Plugins](https://code.claude.com/docs/en/plugins) ·
+[Marketplaces](https://code.claude.com/docs/en/plugin-marketplaces)

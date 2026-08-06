@@ -1,16 +1,49 @@
-.PHONY: mac-setup brew-folder podman-setup lint fmt update whats-new doctor precommit help
+.PHONY: mac-setup brew-folder homebrew-setup zsh-setup databricks-setup git-setup podman-setup claude-setup claude-plugins claude-validate lint fmt update whats-new doctor precommit help
 
-# Discovers all shell scripts under src/scripts/ automatically —
-# adding a new script requires no Makefile changes.
-SHELL_SCRIPTS := $(shell find src/scripts -name '*.sh' | sort) src/dotfiles/claude/statusline-command.sh
+# Discovers every shell script in the repo automatically — adding a new script,
+# or a new plugin hook, requires no Makefile changes.
+SHELL_SCRIPTS := $(shell find src/scripts src/dotfiles/claude/plugins -name '*.sh' | sort) src/dotfiles/claude/statusline-command.sh
+CLAUDE_DIR := src/dotfiles/claude
+PLUGIN := $(CLAUDE_DIR)/plugins/batman
 
 ##  mac-setup: install packages, .zshrc, .databrickscfg
 mac-setup:
 	@bash src/scripts/setup.sh
 
+## homebrew-setup: Homebrew itself + Brewfile only
+homebrew-setup:
+	@bash -c 'source src/scripts/lib/homebrew.sh && setup_homebrew'
+
+## zsh-setup: Oh My Zsh, themes, .zshrc, .secrets.zsh only
+zsh-setup:
+	@bash -c 'source src/scripts/lib/zsh.sh && setup_zsh'
+
+## databricks-setup: .databrickscfg only
+databricks-setup:
+	@bash -c 'source src/scripts/lib/databricks.sh && setup_databricks'
+
+## git-setup: .gitconfig + work/personal identity includes only
+git-setup:
+	@bash -c 'source src/scripts/lib/git.sh && setup_git'
+
 ## podman-setup: setup podman machine and registry mirror
 podman-setup:
 	@bash src/scripts/setup_podman.sh
+
+## claude-setup: deploy Claude host config (CLAUDE.md, statusline, settings.local.json) only
+claude-setup:
+	@bash -c 'source src/scripts/lib/claude.sh && setup_claude'
+
+## claude-validate: validate the batcave marketplace + batman plugin manifests
+claude-validate:
+	@claude plugin validate $(CLAUDE_DIR) && claude plugin validate $(PLUGIN)
+
+## claude-plugins: register the batcave marketplace and install batman via the CLI
+claude-plugins: claude-validate
+	@claude plugin marketplace add "$(CURDIR)/$(CLAUDE_DIR)" || true
+	@claude plugin install batman@batcave || true
+	@claude plugin list
+	@echo "↻ restart Claude Code to load the plugin"
 
 ## lint: run shellcheck on all shell scripts (same check CI runs)
 lint:
@@ -28,9 +61,12 @@ update:
 whats-new:
 	@bash src/scripts/whats_new.sh
 
-## doctor: sanity check — brew doctor + podman info
+## doctor: sanity check — brew doctor + podman info + Claude plugin manifests
 doctor:
-	@brew doctor && podman info > /dev/null && echo "✅ all systems green"
+	@brew doctor
+	@podman info > /dev/null
+	@claude plugin validate $(CLAUDE_DIR) > /dev/null && claude plugin validate $(PLUGIN) > /dev/null
+	@echo "✅ all systems green"
 
 ## precommit: install + run pre-commit on the whole repo
 precommit:

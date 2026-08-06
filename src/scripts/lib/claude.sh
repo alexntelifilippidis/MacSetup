@@ -27,7 +27,9 @@ _claude_link_host_files() {
   symlink_if_changed "$src_dir/CLAUDE.md" "$HOME/CLAUDE.md"
 
   # settings.json references this at a stable path, so repointing the symlink
-  # migrates the source with no settings edit.
+  # migrates the source with no settings edit. It reads $HOME/.config/theme
+  # (written by `make zsh-setup`) and sources the matching statusline-themes/*.sh
+  # in place — the themes dir travels with it, no separate symlink needed.
   symlink_if_changed "$src_dir/statusline-command.sh" "$dst_dir/statusline-command.sh"
 
   # Machine-specific overrides — gitignored, so absent on a fresh clone.

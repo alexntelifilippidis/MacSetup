@@ -23,6 +23,7 @@ MacSetup/
     │   ├── databricks/          # .databrickscfg (gitignored)
     │   ├── git/                 # .gitconfig + work/personal identity includes
     │   ├── homebrew/            # Brewfile
+    │   ├── iterm2/               # Dynamic Profiles (Batman + Default)
     │   ├── podman/               # registries.conf
     │   └── zsh/                 # .zshrc + .secrets.zsh (gitignored)
     └── scripts/
@@ -41,6 +42,7 @@ Every module has its own README with the *how* and *why*. This file only orients
 | 🦇 claude + plugin    | [`src/dotfiles/claude/`](src/dotfiles/claude/README.md) → [`plugins/batman/`](src/dotfiles/claude/plugins/batman/README.md) | Host config, the `batcave` marketplace, skills, MCP setup docs |
 | 🍺 homebrew           | [`src/dotfiles/homebrew/`](src/dotfiles/homebrew/README.md)        | Brewfile as single source of truth                          |
 | 💻 zsh                | [`src/dotfiles/zsh/`](src/dotfiles/zsh/README.md)                   | Oh My Zsh, themes, `.secrets.zsh`                            |
+| 🖥️ iterm2             | [`src/dotfiles/iterm2/`](src/dotfiles/iterm2/README.md)             | Dynamic Profiles (Batman + Default), theme sync              |
 | 🌿 git                | [`src/dotfiles/git/`](src/dotfiles/git/README.md)                   | Work/personal identity switching, branch/commit conventions |
 | 🧪 databricks         | [`src/dotfiles/databricks/`](src/dotfiles/databricks/README.md)     | `.databrickscfg` profiles, auth methods                      |
 | 🐋 podman             | [`src/dotfiles/podman/`](src/dotfiles/podman/README.md)             | Machine setup, Docker Hub mirror                             |
@@ -65,6 +67,7 @@ gitignored.
 make mac-setup        # everything, in order
 make homebrew-setup    # Homebrew + Brewfile only
 make zsh-setup          # Oh My Zsh, themes, .zshrc, secrets only
+make iterm-setup        # iTerm2 Dynamic Profiles (Batman + Default) only
 make databricks-setup   # .databrickscfg only
 make git-setup          # .gitconfig + identity includes only
 make podman-setup       # Podman machine + registry mirror only

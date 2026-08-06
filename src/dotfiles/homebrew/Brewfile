@@ -79,3 +79,7 @@ cask "alfred"
 
 # ─── Fonts ────────────────────────────────────────────────────────────────────
 cask "font-meslo-lg-nerd-font"   # Powerline glyphs — required for kaizen zsh theme
+cask "font-inconsolata-nerd-font" # iTerm2 terminal font — full Nerd Font patch (Font
+                                   # Awesome + Material Design + Powerline), not the
+                                   # plain "-for-powerline" cask, since the batman
+                                   # theme's glyphs span all three icon sets

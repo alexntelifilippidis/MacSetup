@@ -12,6 +12,8 @@ export REPO_ROOT
 source "$SCRIPT_DIR/lib/homebrew.sh"
 # shellcheck source=./lib/zsh.sh
 source "$SCRIPT_DIR/lib/zsh.sh"
+# shellcheck source=./lib/iterm.sh
+source "$SCRIPT_DIR/lib/iterm.sh"
 # shellcheck source=./lib/databricks.sh
 source "$SCRIPT_DIR/lib/databricks.sh"
 # shellcheck source=./lib/git.sh
@@ -30,6 +32,7 @@ echo ""
 
 setup_homebrew
 setup_zsh
+setup_iterm
 setup_databricks
 setup_git
 setup_podman

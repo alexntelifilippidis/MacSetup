@@ -32,15 +32,29 @@ session_id=$(echo "$input" | jq -r '.session_id // "default"')
 # pr.number present when an open PR exists for the current branch
 pr_num=$(echo "$input" | jq -r '.pr.number // empty')
 
-# ── Colors — orange/blue palette (256-color) ──────────────────────────────────
-# 208=orange (primary), 033=blue (accent), 110=light-blue (accent light), 255=white
-ORANGE='\033[38;5;208m'     # primary — model label, branch, cost
-BLUE='\033[38;5;33m'        # accent — dir path
-LIGHT_BLUE='\033[38;5;110m' # accent light — PR, time
-WHITE='\033[38;5;255m'      # text — duration
-GREEN='\033[32m'            # semantic — staged (ready to commit)
-YELLOW='\033[33m'           # semantic — modified (unstaged)
-RED='\033[31m'              # semantic — high context usage
+# ── Colors — sourced from the active zsh theme, so both stay in sync ──────────
+# $HOME/.config/theme holds one word (batman/kaizen/amuse), written by
+# `make zsh-setup`. Each statusline-themes/<name>.sh sets PRIMARY / ACCENT /
+# ACCENT_LIGHT / TEXT; falls back to kaizen's palette if the file is missing.
+theme=$(cat "$HOME/.config/theme" 2> /dev/null || echo kaizen)
+script_path="${BASH_SOURCE[0]}"
+[ -L "$script_path" ] && script_path="$(readlink "$script_path")"
+script_dir="$(cd "$(dirname "$script_path")" && pwd)"
+theme_file="$script_dir/statusline-themes/${theme}.sh"
+
+if [ -f "$theme_file" ]; then
+  # shellcheck disable=SC1090
+  source "$theme_file"
+else
+  PRIMARY='\033[38;5;208m'
+  ACCENT='\033[38;5;33m'
+  ACCENT_LIGHT='\033[38;5;110m'
+  TEXT='\033[38;5;255m'
+fi
+
+GREEN='\033[32m'  # semantic — staged (ready to commit)
+YELLOW='\033[33m' # semantic — modified (unstaged)
+RED='\033[31m'    # semantic — high context usage
 BOLD='\033[1m'
 DIM='\033[2m'
 RESET='\033[0m'
@@ -71,17 +85,17 @@ IFS='|' read -r branch staged modified < "$CACHE"
 
 # ── Row 1: [Model]  📁 dir  🌿 branch  +N  ~N  PR #N ─────────────────────────
 dir="${cwd##*/}"
-row1="${ORANGE}${BOLD}[${model}]${RESET}  📁 ${BLUE}${dir}${RESET}"
+row1="${PRIMARY}${BOLD}[${model}]${RESET}  📁 ${ACCENT}${dir}${RESET}"
 
 if [ -n "$branch" ]; then
-  row1="${row1}  🌿 ${ORANGE}${branch}${RESET}"
+  row1="${row1}  🌿 ${PRIMARY}${branch}${RESET}"
   # staged = index changes ready to commit; modified = unstaged working-tree changes
   [ "${staged:-0}" -gt 0 ] && row1="${row1} ${GREEN}+${staged}${RESET}"
   [ "${modified:-0}" -gt 0 ] && row1="${row1} ${YELLOW}~${modified}${RESET}"
 fi
 
 # Show PR number when Claude has found an open PR for the current branch
-[ -n "$pr_num" ] && row1="${row1}  ${DIM}${LIGHT_BLUE}PR #${pr_num}${RESET}"
+[ -n "$pr_num" ] && row1="${row1}  ${DIM}${ACCENT_LIGHT}PR #${pr_num}${RESET}"
 
 # ── Context progress bar ──────────────────────────────────────────────────────
 # Color threshold: green < 70 %, yellow 70–89 %, red ≥ 90 %
@@ -115,7 +129,7 @@ secs=$((dur_sec % 60))
 cost_fmt=$(LANG=C /usr/bin/printf '$%.4f' "$cost")
 
 # ── Row 2: [bar] pct%  💰 cost  ⏱️ Xm Ys ─────────────────────────────────────
-row2="${bar_color}${bar}${RESET} ${pct_int}%  💰 ${ORANGE}${cost_fmt}${RESET}  ⏱️ ${WHITE}${mins}m ${secs}s${RESET}"
+row2="${bar_color}${bar}${RESET} ${pct_int}%  💰 ${PRIMARY}${cost_fmt}${RESET}  ⏱️ ${TEXT}${mins}m ${secs}s${RESET}"
 
 # printf '%b' interprets ANSI escapes more reliably than echo -e across shells
 printf '%b\n' "$row1"

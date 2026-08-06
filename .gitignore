@@ -47,6 +47,10 @@ coverage.xml
 # Only the .template file is committed.
 src/dotfiles/zsh/.secrets.zsh
 .secrets.zsh
+
+# Theme selection — machine-specific, chosen interactively by `make zsh-setup`.
+# Only the .template file (default: batman) is committed.
+src/dotfiles/zsh/.theme
 *.secret
 .env
 .env.*

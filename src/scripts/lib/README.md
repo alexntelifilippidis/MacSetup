@@ -11,6 +11,7 @@ each exposing exactly one `setup_*` function.
 |-------------------|--------------------|---------------------------------------------------------------------------------|
 | 🍺 `homebrew.sh`  | `setup_homebrew`   | Homebrew itself, `shellenv` in `.zprofile`, `Brewfile` → `~/.config/homebrew/`   |
 | 💻 `zsh.sh`       | `setup_zsh`        | Oh My Zsh, `kaizen`/`batman` themes, `.zshrc`, `.secrets.zsh` (seeded, `chmod 600`) |
+| 🖥️ `iterm.sh`     | `setup_iterm`      | iTerm2 Dynamic Profiles (Batman + Default) → `~/Library/Application Support/iTerm2/DynamicProfiles/` |
 | 🧪 `databricks.sh`| `setup_databricks` | `.databrickscfg` → `$HOME` (`chmod 600` first)                                  |
 | 🌿 `git.sh`       | `setup_git`        | `.gitconfig` + work/personal identity includes                                  |
 | 🐋 `podman.sh`    | `setup_podman`     | Podman machine + Docker Hub registry mirror                                     |

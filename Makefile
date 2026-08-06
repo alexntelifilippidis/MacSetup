@@ -1,4 +1,4 @@
-.PHONY: mac-setup brew-folder homebrew-setup zsh-setup databricks-setup git-setup podman-setup claude-setup claude-plugins claude-validate lint fmt update whats-new doctor precommit help
+.PHONY: mac-setup brew-folder homebrew-setup zsh-setup iterm-setup databricks-setup git-setup podman-setup claude-setup claude-plugins claude-validate lint fmt update whats-new doctor precommit help
 
 # Discovers every shell script in the repo automatically — adding a new script,
 # or a new plugin hook, requires no Makefile changes.
@@ -17,6 +17,10 @@ homebrew-setup:
 ## zsh-setup: Oh My Zsh, themes, .zshrc, .secrets.zsh only
 zsh-setup:
 	@bash -c 'source src/scripts/lib/zsh.sh && setup_zsh'
+
+## iterm-setup: deploy repo-managed iTerm2 Dynamic Profiles (Batman + Default) only
+iterm-setup:
+	@bash -c 'source src/scripts/lib/iterm.sh && setup_iterm'
 
 ## databricks-setup: .databrickscfg only
 databricks-setup:

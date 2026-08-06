@@ -26,7 +26,23 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="kaizen"
+#
+# Chosen interactively by `make zsh-setup` (batman / kaizen / amuse) and
+# written to $HOME/.config/theme — the Claude Code statusline reads the same
+# file, so both stay in sync. Falls back to batman if unset.
+ZSH_THEME="$(cat "$HOME/.config/theme" 2> /dev/null || echo batman)"
+
+# Sync iTerm2's profile to the chosen theme — "Batman" theme -> Batman profile,
+# everything else -> Default. Profiles are repo-managed Dynamic Profiles (see
+# src/dotfiles/iterm2/DynamicProfiles/batcave.json), not the built-in ones.
+# ITERM_SESSION_ID is only set when actually running inside iTerm2.
+if [[ -n "$ITERM_SESSION_ID" ]]; then
+  if [[ "$ZSH_THEME" == "batman" ]]; then
+    printf '\033]1337;SetProfile=Batman\a'
+  else
+    printf '\033]1337;SetProfile=Default\a'
+  fi
+fi
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -114,7 +130,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 

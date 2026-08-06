@@ -61,7 +61,9 @@ brew "zsh-syntax-highlighting"
 # ─── Casks (GUI apps) ─────────────────────────────────────────────────────────
 cask "tflint"  # Terraform linter
 cask "git-credential-manager"
-cask "google-chrome"
+# Not managed via brew: Chrome self-updates in place and drifts from the cask
+# version, permanently blocking `brew bundle check` until a manual `sudo`
+# reinstall. Install/update it from https://www.google.com/chrome/ instead.
 cask "iterm2"
 cask "pycharm"
 cask "intellij-idea"

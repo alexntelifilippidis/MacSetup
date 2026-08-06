@@ -43,7 +43,7 @@ claude mcp add databricks -- uvx uc-mcp-proxy \
 ```
 
 Prerequisites: `uv` and the `databricks` CLI — both in the
-[Brewfile](../../../src/dotfiles/homebrew/Brewfile).
+[Brewfile](../../../../homebrew/Brewfile).
 
 > ⚠️ **Expand the values, don't pass `${VAR}` literally.** A plugin `.mcp.json` with an
 > unset `${DATABRICKS_MCP_URL}` expands to an empty `--url` and the server hangs until it
@@ -99,4 +99,4 @@ If the workspace uses IP access lists, your egress IP needs allowlisting.
 - [Connect non-Databricks clients to Databricks MCP servers](https://learn.microsoft.com/en-us/azure/databricks/generative-ai/mcp/connect-external-services)
 - [Databricks managed MCP servers](https://learn.microsoft.com/en-us/azure/databricks/generative-ai/mcp/managed-mcp)
 - [Databricks AI Development Kit](https://github.com/databricks-solutions/ai-dev-kit)
-- CLI profiles: [`src/dotfiles/databricks/`](../../../src/dotfiles/databricks/README.md)
+- CLI profiles: [`src/dotfiles/databricks/`](../../../../databricks/README.md)

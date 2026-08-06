@@ -10,10 +10,10 @@
 # registration is done by the `claude` CLI instead, via `make claude-plugins`,
 # which owns that file and knows its schema.
 #
-# The batcave marketplace under plugins/ is registered once with
-# `make claude-plugins`; after that a `git pull` updates the live assets with no
-# re-deploy, because the marketplace source is a `directory` pointing at this
-# working copy.
+# The batcave marketplace under src/dotfiles/claude/plugins/ is registered once
+# with `make claude-plugins`; after that a `git pull` updates the live assets
+# with no re-deploy, because the marketplace source is a `directory` pointing
+# at this working copy.
 # shellcheck source=./helpers.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/helpers.sh"
 REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)}"
@@ -41,11 +41,11 @@ _claude_link_host_files() {
 # Report what the batcave marketplace ships and whether it is registered yet.
 # Purely informational — this module never registers it, `make claude-plugins` does.
 _claude_report_plugin() {
-  local plugin_dir="$REPO_ROOT/plugins/batman"
+  local plugin_dir="$REPO_ROOT/src/dotfiles/claude/plugins/batman"
   local kind count
 
   [ -d "$plugin_dir" ] || {
-    echo -e "  ${YELLOW}⚠️  Missing:    plugins/batman not found in repo${RESET}"
+    echo -e "  ${YELLOW}⚠️  Missing:    src/dotfiles/claude/plugins/batman not found in repo${RESET}"
     return 0
   }
 

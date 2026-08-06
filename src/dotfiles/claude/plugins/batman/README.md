@@ -12,12 +12,7 @@ The one plugin of the [`batcave`](../../.claude-plugin/marketplace.json) marketp
 | 🧠 **skills**| `mr-pr-creator` · `jira-ticket-creator` · `confluence-page-creator` — see [below](#-skills) |
 | 🤖 **agents**| *(none yet)*                                                        |
 
-No `commands/` and no `hooks/`, deliberately:
-
-- Claude Code already exposes a skill as `/batman:<name>`, so a `commands/` dir would split
-  one concept across two folders.
-- `pre-commit` already runs the `shellcheck` + `shfmt` that a validation hook would
-  duplicate, just later and without blocking mid-edit.
+Every skill is also invocable directly as `/batman:<name>`.
 
 ---
 
@@ -60,16 +55,9 @@ the MR skill comments the URL back onto the ticket and transitions it via the Ji
 
 ## 🔌 MCP
 
-[`mcp/`](./mcp/README.md) holds setup notes only — there is **no `.mcp.json`**, on purpose:
-
-1. **This repo is public.** Real Atlassian and Databricks endpoints are internal
-   infrastructure.
-2. **The values are per-machine** — several Databricks workspaces and profiles.
-3. **A plugin `.mcp.json` auto-registers on install**, so every server would try to connect
-   on every session start, including ones you don't need.
-
-Register servers with `claude mcp add` per the docs; keep endpoints in
-[`.secrets.zsh`](../../src/dotfiles/zsh/README.md).
+Servers register through `claude mcp add`, per the setup doc for each — endpoints live in
+[`.secrets.zsh`](../../../zsh/README.md). See [`mcp/README.md`](./mcp/README.md) for the
+full picture.
 
 | Doc                                        | Products                | Notes                                     |
 |--------------------------------------------|-------------------------|-------------------------------------------|
@@ -101,18 +89,16 @@ claude plugin update batman
 
 ---
 
-## 🚫 What is *not* here
+## 📍 Host config
 
-Host-level Claude config can't live in a plugin and stays in
-[`src/dotfiles/claude/`](../../src/dotfiles/claude/):
+One level up, in [`src/dotfiles/claude/`](../../README.md) itself:
 
-- `CLAUDE.md` → `$HOME/CLAUDE.md` — persona and always-on principles
-- `statusline-command.sh` → `$HOME/.claude/`
-- `settings.local.json` → `$HOME/.claude/` (gitignored)
+- `../../CLAUDE.md` → `$HOME/CLAUDE.md`
+- `../../statusline-command.sh` → `$HOME/.claude/`
+- `../../settings.local.json` → `$HOME/.claude/` (gitignored)
 
-The repo does **not** manage `~/.claude/settings.json` at all — Claude Code and external
-installers write to it, so a setup script that merges or replaces it can only break a
-working install.
+`~/.claude/settings.json` is owned by Claude Code and `make claude-plugins` — see
+[details](../../README.md#-settingsjson-ownership).
 
 ---
 

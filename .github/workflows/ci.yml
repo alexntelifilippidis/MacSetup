@@ -27,7 +27,8 @@ jobs:
 
       - name: ShellCheck
         run: |
-          find src/scripts plugins -name '*.sh' | sort | xargs shellcheck -x --severity=warning
+          find src/scripts src/dotfiles/claude/plugins -name '*.sh' | sort \
+            | xargs shellcheck -x --severity=warning
           shellcheck -x --severity=warning src/dotfiles/claude/statusline-command.sh
 
       # The claude CLI isn't available on the runner, so validate what we can:
@@ -36,27 +37,30 @@ jobs:
       # break that only shows up as "plugin not found" on a fresh install.
       - name: Validate Claude marketplace manifests
         run: |
-          jq -e . .claude-plugin/marketplace.json > /dev/null
-          jq -r '.plugins[].source' .claude-plugin/marketplace.json | while read -r src; do
-            manifest="${src#./}/.claude-plugin/plugin.json"
+          MP=src/dotfiles/claude/.claude-plugin/marketplace.json
+          MPDIR=src/dotfiles/claude
+          PLUGINS=src/dotfiles/claude/plugins
+          jq -e . "$MP" > /dev/null
+          jq -r '.plugins[].source' "$MP" | while read -r src; do
+            manifest="$MPDIR/${src#./}/.claude-plugin/plugin.json"
             test -f "$manifest" || { echo "❌ missing $manifest"; exit 1; }
             jq -e . "$manifest" > /dev/null
           done
-          jq -r '.plugins[] | "\(.name) \(.source)"' .claude-plugin/marketplace.json |
+          jq -r '.plugins[] | "\(.name) \(.source)"' "$MP" |
             while read -r name src; do
-              actual=$(jq -r .name "${src#./}/.claude-plugin/plugin.json")
+              actual=$(jq -r .name "$MPDIR/${src#./}/.claude-plugin/plugin.json")
               test "$name" = "$actual" || {
                 echo "❌ marketplace lists '$name' but ${src} declares '$actual'"; exit 1; }
             done
           # Every SKILL.md needs name + description frontmatter or Claude never loads it.
-          find plugins -name SKILL.md | while read -r skill; do
+          find "$PLUGINS" -name SKILL.md | while read -r skill; do
             head -1 "$skill" | grep -qx -- '---' || { echo "❌ $skill: no frontmatter"; exit 1; }
             grep -qE '^name:' "$skill" || { echo "❌ $skill: no name:"; exit 1; }
             grep -qE '^description:' "$skill" || { echo "❌ $skill: no description:"; exit 1; }
           done
           # A token in .mcp.json is a leak: every server must use OAuth or a local CLI
           # profile. gitleaks catches known token formats; this catches the shape.
-          for mcp in $(find plugins -name '.mcp.json'); do
+          for mcp in $(find "$PLUGINS" -name '.mcp.json'); do
             jq -e . "$mcp" > /dev/null
             jq -e 'any(.mcpServers[]?; (.headers // {}) | keys[]? | ascii_downcase == "authorization")' \
               "$mcp" > /dev/null && { echo "❌ $mcp: Authorization header — use OAuth"; exit 1; }

@@ -46,7 +46,7 @@ claude mcp add github \
   actually want the agent opening PRs.
 - **Scope the toolsets down** with `GITHUB_TOOLSETS` — the full set is large and every tool
   schema costs context on every session.
-- Podman, not Docker (see [`src/dotfiles/podman/`](../../../src/dotfiles/podman/README.md)).
+- Podman, not Docker (see [`src/dotfiles/podman/`](../../../../podman/README.md)).
 - Rotate the PAT if it is ever echoed, logged, or pasted anywhere.
 
 ---

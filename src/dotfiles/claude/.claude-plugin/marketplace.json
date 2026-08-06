@@ -24,7 +24,7 @@
         "databricks"
       ],
       "source": "./plugins/batman",
-      "homepage": "https://github.com/alexntelifilippidis/MacSetup/tree/master/plugins/batman"
+      "homepage": "https://github.com/alexntelifilippidis/MacSetup/tree/master/src/dotfiles/claude/plugins/batman"
     }
   ]
 }

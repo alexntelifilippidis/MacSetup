@@ -16,7 +16,7 @@ schema and double the context cost for zero extra capability.
 > 🔒 **No org-specific hostname is recorded here — this repo is public.** If your Atlassian
 > access goes through an internal gateway, get its URL from `claude mcp list` on an already
 > configured machine and keep it in
-> [`.secrets.zsh`](../../../src/dotfiles/zsh/README.md) as `ATLASSIAN_MCP_URL`.
+> [`.secrets.zsh`](../../../../zsh/README.md) as `ATLASSIAN_MCP_URL`.
 
 Where an employer mandates a specific gateway, use that one — not the public endpoint.
 

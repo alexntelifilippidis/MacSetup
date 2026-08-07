@@ -66,7 +66,7 @@ _batman_path() {
 }
 
 PROMPT='
-%F{${_BATMAN_C_GOLD}}${_BATMAN_BAT} %{$reset_color%} %F{${_BATMAN_C_SLATE}}${_BATMAN_FOLDER}%{$reset_color%} $(_batman_path)$(git_prompt_info) %F{${_BATMAN_C_SLATE}}${_BATMAN_CLOCK}%{$reset_color%} %B%F{${_BATMAN_C_GOLD_DIM}}%*%b%{$reset_color%}
-%(?.%F{${_BATMAN_C_LIGHT_GOLD}}❯%F{${_BATMAN_C_SLATE}}❯%F{${_BATMAN_C_LIGHT_GOLD}}❯.%F{${_BATMAN_C_ERR_1}}❯%F{${_BATMAN_C_ERR_2}}❯%F{${_BATMAN_C_ERR_3}}❯)%{$reset_color%} '
+%F{${_BATMAN_C_SLATE}}╭─%{$reset_color%} %F{${_BATMAN_C_GOLD}}${_BATMAN_BAT}%{$reset_color%} %F{${_BATMAN_C_SLATE}}${_BATMAN_FOLDER}%{$reset_color%} $(_batman_path)$(git_prompt_info) %F{${_BATMAN_C_SLATE}}${_BATMAN_CLOCK}%{$reset_color%} %B%F{${_BATMAN_C_GOLD_DIM}}%*%b%{$reset_color%}
+%F{${_BATMAN_C_SLATE}}╰─%{$reset_color%}%(?.%B%F{${_BATMAN_C_LIGHT_GOLD}}❯%b.%B%F{${_BATMAN_C_ERR_2}}❯%b)%{$reset_color%} '
 
 RPROMPT=''

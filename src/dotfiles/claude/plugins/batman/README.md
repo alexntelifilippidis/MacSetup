@@ -9,7 +9,7 @@ The one plugin of the [`batcave`](../../.claude-plugin/marketplace.json) marketp
 | Kind        | Status                                                              |
 |-------------|---------------------------------------------------------------------|
 | 🔌 **mcp**   | [Setup docs](./mcp/README.md) for GitHub · GitLab · Jira+Confluence · Databricks — **docs only, nothing deployed** |
-| 🧠 **skills**| `mr-pr-creator` · `jira-ticket-creator` · `confluence-page-creator` — see [below](#-skills) |
+| 🧠 **skills**| `mr-pr-creator` · `jira-ticket-creator` · `confluence-page-creator` · `bristol-dependency-check` · `python-project-structure` — see [below](#-skills) |
 | 🤖 **agents**| *(none yet)*                                                        |
 
 Every skill is also invocable directly as `/batman:<name>`.
@@ -47,6 +47,8 @@ make claude-validate             # manifests parse and agree
 | `mr-pr-creator`            | Creating a PR/MR — detects GitHub vs GitLab from the remote, branches with the right naming convention, writes conventional commits, resolves the token from git-credential-manager, fills the repo's template from the diff |
 | `jira-ticket-creator`      | Drafting a Jira ticket — Overview / Business Value / Background / Technical Work / Acceptance Criteria, created via the Atlassian MCP or `acli` |
 | `confluence-page-creator`  | Publishing a Confluence page from notes or a ticket — via the Atlassian MCP or the REST API, into a confirmed space + parent page |
+| `bristol-dependency-check` | Checking if a Databricks table change has a dependency on Team Bristol — greps their `de-platform-new-tenant` repo (local checkout) for jobs/pipelines referencing the table and reports file:line + owning job in the terminal |
+| `python-project-structure` | Creating or reviewing Python code — `src/` layout, layered package (models / repositories / services / api), Protocol-based constructor DI, Pydantic at the edges, structlog, ruff + mypy --strict + pytest 90% + pre-commit; `scripts/scaffold.sh` generates the skeleton |
 
 `mr-pr-creator` and `jira-ticket-creator` chain together for "start ticket → open MR" —
 the MR skill comments the URL back onto the ticket and transitions it via the Jira one.

@@ -159,3 +159,5 @@ export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
 # Real tokens live in ~/.secrets.zsh (chmod 600, gitignored).
 # Bootstrapped by setup.sh from zsh/.secrets.zsh.template on first run.
 [ -f "$HOME/.secrets.zsh" ] && source "$HOME/.secrets.zsh"
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit

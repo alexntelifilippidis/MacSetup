@@ -48,7 +48,7 @@ make claude-validate             # manifests parse and agree
 | `jira-ticket-creator`      | Drafting a Jira ticket — Overview / Business Value / Background / Technical Work / Acceptance Criteria, created via the Atlassian MCP or `acli` |
 | `confluence-page-creator`  | Publishing a Confluence page from notes or a ticket — via the Atlassian MCP or the REST API, into a confirmed space + parent page |
 | `bristol-dependency-check` | Checking if a Databricks table change has a dependency on Team Bristol — greps their `de-platform-new-tenant` repo (local checkout) for jobs/pipelines referencing the table and reports file:line + owning job in the terminal |
-| `python-project-structure` | Creating or reviewing Python code — `src/` layout, layered package (models / repositories / services / api), Protocol-based constructor DI, Pydantic at the edges, structlog, ruff + mypy --strict + pytest 90% + pre-commit; `scripts/scaffold.sh` generates the skeleton |
+| `python-project-structure` | Creating or reviewing Python code — `src/` layout, layered package (models / repositories / services / api), Protocol-based constructor DI, Pydantic-only models (+ `pydantic` skill; `dagster-expert` in Dagster repos), structlog, ruff + mypy --strict + pytest 90% + pre-commit; `scripts/scaffold.sh` generates the skeleton |
 
 `mr-pr-creator` and `jira-ticket-creator` chain together for "start ticket → open MR" —
 the MR skill comments the URL back onto the ticket and transitions it via the Jira one.

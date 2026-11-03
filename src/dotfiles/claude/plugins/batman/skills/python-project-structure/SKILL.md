@@ -1,12 +1,21 @@
 ---
 name: python-project-structure
-description: How to structure Python code — repo layout (src/), layered packages (models / repositories / services / api), module boundaries, meaningful naming, Sphinx docstrings without types, constructor dependency injection via Protocols, Pydantic-at-the-edges vs dataclasses inside, custom error hierarchy, structlog logging, pydantic-settings config, and the ruff + mypy --strict + pytest (90% coverage) + pre-commit toolchain. Use when creating a new Python project or package, adding a module/class/component to one, deciding where a piece of Python code belongs, reviewing a Python project's structure, or when asked to scaffold a Python repo.
+description: How to structure Python code — repo layout (src/), layered packages (models / repositories / services / api), module boundaries, meaningful naming, Sphinx docstrings without types, constructor dependency injection via Protocols, Pydantic models for all data (no dataclasses — defers to the pydantic skill), custom error hierarchy, structlog logging, pydantic-settings config, and the ruff + mypy --strict + pytest (90% coverage) + pre-commit toolchain. In a Dagster repo, also loads the dagster-expert skill. Use when creating a new Python project or package, adding a module/class/component to one, deciding where a piece of Python code belongs, reviewing a Python project's structure, or when asked to scaffold a Python repo.
 ---
 
 # Python Project Structure
 
 These are the defaults for **new** Python code. In an existing repo, its established
 conventions win — follow them, and only propose (never silently apply) a restructure.
+
+**Load these skills alongside this one:**
+
+- `pydantic:pydantic` — **always**, before writing or reviewing any model, schema or settings class.
+- `dagster-expert:dagster-expert` — **when the repo is a Dagster project**: `dagster` in
+  `pyproject.toml` dependencies, a `[tool.dg]` / `[tool.dagster]` table, a `dg.toml`, or a
+  `dg.Definitions(...)`. Dagster's project layout (`defs/`, components, `definitions.py`)
+  wins over §1–2 where they conflict; the layering, naming, DI and toolchain rules still apply
+  inside it.
 
 Scaffold a new project with the bundled script — it is idempotent and never overwrites:
 
@@ -52,14 +61,15 @@ api  →  services  →  repositories  →  models
 
 | Layer           | Holds                                                        | Must not                                   |
 |-----------------|--------------------------------------------------------------|--------------------------------------------|
-| `models/`       | Frozen dataclasses — the internal domain vocabulary          | import any other layer; do I/O             |
+| `models/`       | Frozen Pydantic models — the internal domain vocabulary      | import any other layer; do I/O             |
 | `repositories/` | A `Protocol` per data source + its concrete implementations  | contain business rules                     |
 | `services/`     | Business logic; depends on repository **Protocols**          | import a concrete repository; do I/O directly |
 | `api/`          | Pydantic request/response schemas, routes, CLI, job tasks    | contain business logic — translate and delegate |
 
 - A lower layer **never** imports a higher one. A cycle means a concept is in the wrong layer.
-- Pydantic models live at the boundary (`api/`, and inside `repositories/` when parsing
-  external payloads). Convert to domain dataclasses before handing data to `services/`.
+- Boundary schemas (`api/`, and inside `repositories/` when parsing external payloads) are
+  separate Pydantic models from the domain ones — map them to `models/` types before handing
+  data to `services/`, so an external contract change never leaks into business logic.
 
 ## 3. Modules and naming
 
@@ -149,12 +159,16 @@ def main() -> None:
 
 | Use                                   | For                                                      |
 |---------------------------------------|----------------------------------------------------------|
-| `@dataclass(frozen=True, slots=True)` | Internal domain objects in `models/`                     |
+| Pydantic `BaseModel`, `ConfigDict(frozen=True)` | Internal domain objects in `models/`          |
 | Pydantic `BaseModel`                  | Anything crossing a boundary: API payloads, external data, files |
 | `pydantic_settings.BaseSettings`      | Runtime config, in `config.py` only                       |
 | `typing.Protocol`                     | Interfaces between layers                                |
 
-- Domain objects are immutable — "change" returns a new instance (`dataclasses.replace`).
+- **Pydantic only — no `@dataclass`, `NamedTuple` or `attrs`** for data types. Follow the
+  `pydantic:pydantic` skill for constraints, validators, model hierarchies and serialization.
+- Domain objects are immutable — "change" returns a new instance via
+  `model.model_validate(model.model_dump() | changes)`. Avoid `model_copy(update=...)`: it
+  skips validation.
 - Never pass a raw `dict` between layers; give it a type.
 
 ## 6. Config
@@ -289,7 +303,8 @@ Pre-commit runs ruff + mypy on commit and pytest on push.
 - [ ] Classes, functions and variables have meaningful names — no `data`, `tmp`, `Manager`, `process`
 - [ ] Readable: guard clauses, ≤ 2 nesting levels, small functions, no magic values, keyword-only bools
 - [ ] Dependencies injected through `__init__`, typed as Protocols, wired in `__main__.py`
-- [ ] Boundary data is Pydantic; domain data is frozen dataclasses
+- [ ] All data types are Pydantic (domain models frozen) — no dataclasses
+- [ ] Dagster repo → `dagster-expert` loaded and its layout respected
 - [ ] Errors derive from `<Pkg>Error`; logs are structlog events with fields
 - [ ] Public API has Sphinx docstrings — `:param:` / `:raises:` / `:return:`, no `:type:` / `:rtype:`
 - [ ] `uv run pre-commit run --all-files` passes and `uv run pytest` stays ≥ 90%

@@ -251,7 +251,7 @@ def configure_logging(level: str = "INFO", *, use_json_logs: bool = True) -> Non
 EOF
 
 write_if_missing "${SRC}/models/__init__.py" << 'EOF'
-"""Domain objects — frozen dataclasses. Imports no other layer."""
+"""Domain objects — frozen Pydantic models. Imports no other layer."""
 EOF
 
 write_if_missing "${SRC}/repositories/__init__.py" << 'EOF'

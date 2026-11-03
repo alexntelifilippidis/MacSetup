@@ -58,3 +58,6 @@ src/dotfiles/zsh/.theme
 
 # Claude local overrides — machine-specific, never committed
 src/dotfiles/claude/settings.local.json
+
+# Personal-only skill — loaded from the local working copy, never published.
+src/dotfiles/claude/plugins/batman/skills/daily-kata/

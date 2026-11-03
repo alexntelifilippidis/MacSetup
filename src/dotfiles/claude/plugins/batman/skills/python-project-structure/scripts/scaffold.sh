@@ -165,7 +165,7 @@ from ${PKG}.logging_setup import configure_logging
 def main() -> None:
     """Load settings, configure logging, wire dependencies and start the app."""
     settings = Settings()
-    configure_logging(settings.log_level, use_json_logs=settings.use_json_logs)
+    configure_logging(level=settings.log_level, use_json_logs=settings.use_json_logs)
     log = structlog.get_logger(__name__)
     log.info("app_started", app_name=settings.app_name)
 
@@ -221,7 +221,7 @@ import structlog
 from structlog.typing import Processor
 
 
-def configure_logging(level: str = "INFO", *, use_json_logs: bool = True) -> None:
+def configure_logging(*, level: str = "INFO", use_json_logs: bool = True) -> None:
     """Configure structlog for the whole process.
 
     :param level: minimum level that gets logged, defaults to "INFO"
@@ -290,7 +290,7 @@ from ${PKG}.logging_setup import configure_logging
 
 
 def test_console_logs_filter_below_level(capsys: pytest.CaptureFixture[str]) -> None:
-    configure_logging("WARNING", use_json_logs=False)
+    configure_logging(level="WARNING", use_json_logs=False)
     log = structlog.get_logger()
 
     log.info("hidden_event")

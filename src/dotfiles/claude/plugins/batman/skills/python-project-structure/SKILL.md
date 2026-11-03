@@ -109,8 +109,8 @@ from my_pkg.models.order import Order
 
 
 class OrderRepository(Protocol):
-    def get(self, order_id: str) -> Order: ...
-    def save(self, order: Order) -> None: ...
+    def get(self, *, order_id: str) -> Order: ...
+    def save(self, *, order: Order) -> None: ...
 ```
 
 ```python
@@ -129,17 +129,18 @@ class OrderService:
     :param repository: where orders are read from and saved to
     """
 
-    def __init__(self, repository: OrderRepository) -> None:
+    def __init__(self, *, repository: OrderRepository) -> None:
         self._repository = repository
 
-    def cancel(self, order_id: str) -> None:
+    def cancel(self, *, order_id: str) -> None:
         """Cancel an order and persist the cancelled state.
 
         :param order_id: ID of the order to cancel
         :raises OrderNotFoundError: if no order exists with ``order_id``
         """
-        order = self._repository.get(order_id)
-        self._repository.save(order.cancelled())
+        order = self._repository.get(order_id=order_id)
+        cancelled_order = order.cancelled()
+        self._repository.save(order=cancelled_order)
         log.info("order_cancelled", order_id=order_id)
 ```
 
@@ -147,9 +148,9 @@ class OrderService:
 # src/my_pkg/__main__.py — the composition root
 def main() -> None:
     settings = Settings()
-    configure_logging(settings.log_level, use_json_logs=settings.use_json_logs)
-    service = OrderService(repository=SqlOrderRepository(settings.db_url))
-    run_cli(service)
+    configure_logging(level=settings.log_level, use_json_logs=settings.use_json_logs)
+    service = OrderService(repository=SqlOrderRepository(db_url=settings.db_url))
+    run_cli(service=service)
 ```
 
 - Concrete implementations go in their own modules: `repositories/sql_order_repository.py`.
@@ -188,13 +189,13 @@ class MyPkgError(Exception):
 
 
 class OrderNotFoundError(MyPkgError):
-    def __init__(self, order_id: str) -> None:
+    def __init__(self, *, order_id: str) -> None:
         super().__init__(f"order {order_id!r} not found")
         self.order_id = order_id
 ```
 
 - Every raised error derives from the package base `<Pkg>Error`.
-- Wrap third-party exceptions at the repository boundary: `raise OrderNotFoundError(...) from exc`.
+- Wrap third-party exceptions at the repository boundary: `raise OrderNotFoundError(order_id=...) from exc`.
 - Catch only in `api/` (to map to HTTP codes/exit codes) or where you can genuinely recover.
   No bare `except:`, no `except Exception: pass`.
 
@@ -214,7 +215,7 @@ Every public module, class, method and function gets one. Types live **only** in
 annotations — never `:type:` or `:rtype:`, they drift from the signature.
 
 ```python
-def cancel(self, order_id: str, *, reason: str = "customer_request") -> Order:
+def cancel(self, *, order_id: str, reason: str = "customer_request") -> Order:
     """Cancel an order and persist the cancelled state.
 
     :param order_id: ID of the order to cancel
@@ -242,8 +243,16 @@ Optimise for the next reader, not for the fewest lines. Boring and obvious beats
   comment to separate "steps", each step is a function.
 - **Name intermediate values** instead of nesting calls or chaining long expressions.
 - **No magic values** — `MAX_RETRIES = 3` at module level, not a bare `3` in a condition.
-- **Keyword-only args** (`*`) for booleans and for 2+ params of the same type — call sites
-  read `send(order, notify_customer=True)`, never `send(order, True)`.
+- **Keyword arguments at every call** — pass every argument by name, required ones too:
+  `send_shipment(order=order, items=billable_items, notify_customer=True)`, never
+  `send_shipment(order, billable_items, True)`. Enforce it in our own `def`s and
+  `__init__`s with a leading `*` so a positional call is a `TypeError`. Exceptions: builtins
+  and positional-only stdlib (`len(items)`, `isinstance(x, Order)`, `str(value)`), and a
+  callable whose signature is fixed by a framework (e.g. a `map`/`sorted` key).
+- **Return a named value, not an expression** — assign the result to a variable whose name
+  says what it is, then return that variable: `active_customers = [...]` →
+  `return active_customers`, never `return [c for c in customers if c.is_active]`.
+  Returning a bare literal, `None`, or an already-named variable is fine.
 - **Comprehensions only when they fit on one line** with at most one `if`; otherwise a loop.
 - **Comments explain _why_, never _what_** — if the code needs a "what" comment, rename or
   extract instead.
@@ -258,8 +267,8 @@ def process(o, f):
                 return send(o, f)
 
 
-# ✅ guard clauses, named values, keyword-only flag
-def ship_order(order: Order, *, notify_customer: bool) -> Shipment | None:
+# ✅ guard clauses, keyword-only params, keyword args at the call, named return value
+def ship_order(*, order: Order, notify_customer: bool) -> Shipment | None:
     if order.is_cancelled:
         return None
 
@@ -267,11 +276,18 @@ def ship_order(order: Order, *, notify_customer: bool) -> Shipment | None:
     if not billable_items:
         return None
 
-    return send_shipment(order, billable_items, notify_customer=notify_customer)
+    shipment = send_shipment(
+        order=order,
+        items=billable_items,
+        notify_customer=notify_customer,
+    )
+    return shipment
 ```
 
 ruff enforces the measurable parts: `C90` (complexity ≤ 10), `PLR` (too many
 args/branches/returns, magic values), `ERA` (commented-out code), `FBT` (positional bools).
+Keyword-arg calls and named returns are review rules. **Never enable ruff `RET504`**
+(unnecessary assignment before `return`): it flags exactly the named-return rule above.
 
 ## 11. Tests
 
@@ -301,7 +317,8 @@ Pre-commit runs ruff + mypy on commit and pytest on push.
 - [ ] New code sits in the right layer and imports only downward
 - [ ] One concept per module, absolute imports only
 - [ ] Classes, functions and variables have meaningful names — no `data`, `tmp`, `Manager`, `process`
-- [ ] Readable: guard clauses, ≤ 2 nesting levels, small functions, no magic values, keyword-only bools
+- [ ] Readable: guard clauses, ≤ 2 nesting levels, small functions, no magic values
+- [ ] Every call passes arguments by keyword (own `def`s are keyword-only via `*`); every `return` returns a meaningfully named value, not an expression
 - [ ] Dependencies injected through `__init__`, typed as Protocols, wired in `__main__.py`
 - [ ] All data types are Pydantic (domain models frozen) — no dataclasses
 - [ ] Dagster repo → `dagster-expert` loaded and its layout respected
